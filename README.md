@@ -18,6 +18,17 @@ playwright install chromium
 
 Open `arena_token.py` and edit the configuration block at the top of the file.
 
+**Optionally** - If you are getting recaptcha validation failed even with harvester running
+it is recommended to install Rektcaptcha Extensions Turn Extensions=True and configure
+Extensions_dir to extensions folder so you can use v2 harvester as fallback 
+
+Start `arena_token.py` and wait for browser to be initialised open http://localhost:5000 in browser and  start v3 
+
+Now you can run main.py 
+
+Enter EvaluationId when prompted for eg if url is https://arena.ai/c/019c7e82-0302-7d9f-b74d-559ed21190fa then evalid is 019c7e82-0302-7d9f-b74d-559ed21190fa
+
+
 ### Flags
 
 | Flag | Description | Default |

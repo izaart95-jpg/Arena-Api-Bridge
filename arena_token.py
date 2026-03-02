@@ -642,7 +642,7 @@ V3_SCRIPT = r"""
     const SERVER_URL   = "http://localhost:5000/api";
     const SITE_KEY     = "6Led_uYrAAAAAKjxDIF58fgFtX3t8loNAK85bW9I";
     const ACTION       = "chat_submit";
-    const MIN_INTERVAL = 15;
+    const MIN_INTERVAL = 12;
     const MAX_INTERVAL = 18;
 
     let tokenCount = 0;
