@@ -33,50 +33,24 @@ from playwright.async_api import async_playwright, BrowserContext, Page
 # ============================================================
 
 CUSTOM = True
+# If CUSTOM=True, set PATH to your browser executable.
+#
+#   Linux Brave ........ "/usr/bin/brave-browser"
+#   Linux Chrome ....... "/usr/bin/google-chrome"
+#   Linux Chromium ..... "/usr/bin/chromium-browser"
+#
+#   Windows Brave ...... r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
+#   Windows Chrome ..... r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+#   Windows Edge ....... r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+#
+#   macOS Brave ........ "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
+#   macOS Chrome ....... "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+#   macOS Chromium ..... "/Applications/Chromium.app/Contents/MacOS/Chromium"
 PATH = "/path/to/browser/must/be/chromium"  # Brave is recommended
+
 N = 1  # number of windows (TABS=False) or tabs (TABS=True)
+
 EXTENSIONS = False
-EXTENSIONS_DIR = "/path/to/extensions/"  # Download RektCaptcha
-CUS_PROFILE = False
-PROFILE_PATH = ""
-TABS = False   # False = N separate browser windows  |  True = N tabs in one window
-SERVER_PORT = 5000
-AUTO_LOGIN = True
-
-# ============================================================
-# 5_GAIN — Auto-navigate to a specific arena.ai conversation
-# ============================================================
-# Requires AUTO_LOGIN=True.
-# When True, you will be prompted for an eval_id at startup.
-# After login/ready flow, the window navigates to:
-#   https://arena.ai/c/<eval_id>
-# instead of staying on https://arena.ai
-
-FIVE_GAIN = False   # set to True to enable (AUTO_LOGIN must also be True)
-
-# ============================================================
-# TOKENS FILE — output compatible with modula.py / main.py
-# ============================================================
-
-TOKENS_FILE = "tokens.json"
-CONFIG_FILE  = "config.json"
-
-# ============================================================
-
-# ============================================================
-# COOKIE INJECTION — edit these when COOKIES=True
-# ============================================================
-
-COOKIES = False
-# When COOKIES=True the harvester will inject auth cookies into each context.
-COOKIE_V1 = ""
-# Paste the full value for arena-auth-prod-v1.0 here.
-
-COOKIE_V2 = ""
-# Paste the full value for arena-auth-prod-v1.1 here.
-
-
-
 # If EXTENSIONS=True you MUST set EXTENSIONS_DIR to the Extensions folder of
 # the browser profile you want to load extensions from.
 # Leave as "" only if EXTENSIONS=False.
@@ -98,8 +72,12 @@ COOKIE_V2 = ""
 #   macOS Brave ........ "/Users/USERNAME/Library/Application Support/BraveSoftware/Brave-Browser/Default/Extensions"
 #   macOS Chrome ....... "/Users/USERNAME/Library/Application Support/Google/Chrome/Default/Extensions"
 #   macOS Chromium ..... "/Users/USERNAME/Library/Application Support/Chromium/Default/Extensions"
+EXTENSIONS_DIR = "/path/to/extensions/"  # Download RektCaptcha
+# Get Extensions file in Default/EXTENSIONS from browser://version
 
+TABS = False   # False = N separate browser windows  |  True = N tabs in one window
 
+CUS_PROFILE = False
 # If CUS_PROFILE=True, ALL contexts/windows use PROFILE_PATH as their
 # user_data_dir instead of the auto-generated harvester_profiles/ dirs.
 #
@@ -109,8 +87,23 @@ COOKIE_V2 = ""
 #   Windows Chrome ..... r"C:\Users\USERNAME\AppData\Local\Google\Chrome\User Data"
 #   macOS Brave ........ "/Users/USERNAME/Library/Application Support/BraveSoftware/Brave-Browser"
 #   macOS Chrome ....... "/Users/USERNAME/Library/Application Support/Google/Chrome"
+PROFILE_PATH = ""
 
+# ============================================================
+# COOKIE INJECTION — edit these when COOKIES=True
+# ============================================================
 
+COOKIES = False
+# When COOKIES=True the harvester will inject auth cookies into each context.
+COOKIE_V1 = ""
+# Paste the full value for arena-auth-prod-v1.0 here.
+
+COOKIE_V2 = ""
+# Paste the full value for arena-auth-prod-v1.1 here.
+
+SERVER_PORT = 5000
+
+AUTO_LOGIN = True
 # When AUTO_LOGIN=True and COOKIES=False, the harvester will automatically
 # sign in to arena.ai for each browser window/tab using credentials you enter
 # in the terminal at startup.
@@ -129,7 +122,14 @@ COOKIE_V2 = ""
 # NOTE: AUTO_LOGIN=True is incompatible with COOKIES=True — an error is raised
 #       at startup if both are enabled simultaneously.
 
+# ============================================================
+# TOKENS FILE — output compatible with modula.py / main.py
+# ============================================================
 
+TOKENS_FILE = "tokens.json"
+CONFIG_FILE  = "config.json"
+
+# ============================================================
 
 PROFILES_DIR = Path("harvester_profiles")
 
@@ -171,16 +171,9 @@ if AUTO_LOGIN and COOKIES:
         "Set either AUTO_LOGIN=False (to use manual cookies) or COOKIES=False (to use auto-login)."
     )
 
-if FIVE_GAIN and not AUTO_LOGIN:
-    raise RuntimeError(
-        "FIVE_GAIN=True requires AUTO_LOGIN=True.\n"
-        "Enable AUTO_LOGIN or set FIVE_GAIN=False."
-    )
-
 # ── Collect AUTO_LOGIN credentials once at startup (before browser launch) ────
 _AUTO_LOGIN_EMAIL    = ""
 _AUTO_LOGIN_PASSWORD = ""
-_EVAL_ID             = ""   # populated when FIVE_GAIN=True
 
 if AUTO_LOGIN:
     print("\n" + "=" * 55)
@@ -191,16 +184,6 @@ if AUTO_LOGIN:
     _AUTO_LOGIN_PASSWORD = input("  Password : ").strip()
     if not _AUTO_LOGIN_EMAIL or not _AUTO_LOGIN_PASSWORD:
         raise RuntimeError("AUTO_LOGIN=True but email or password was left blank.")
-
-if FIVE_GAIN:
-    print("\n" + "=" * 55)
-    print("  5_GAIN enabled — enter the arena.ai eval/conversation ID")
-    print("  Windows will navigate to https://arena.ai/c/<eval_id>")
-    print("=" * 55)
-    _EVAL_ID = input("  Eval ID  : ").strip()
-    if not _EVAL_ID:
-        raise RuntimeError("FIVE_GAIN=True but eval_id was left blank.")
-    print(f"  Target URL: https://arena.ai/c/{_EVAL_ID}")
 
 app = FastAPI()
 
@@ -511,12 +494,11 @@ V2_SCRIPT = r"""
                 version: "v2",
                 action: mode === "invisible" ? "invisible_auto" : "checkbox_challenge",
                 harvest_number: v2Count,
-                source_url: window.location.href,
-                _reload_after: true
+                source_url: window.location.href
             })
         }).then(r => r.json()).then(data => {
             console.log(`[v2-${mode} #${v2Count}] Stored. Total: ${data.total_count}`);
-            if (panelCreated) updateStatus(`Token #${v2Count} stored! Reloading...`);
+            if (panelCreated) updateStatus(`Token #${v2Count} stored! Total: ${data.total_count}`);
         }).catch(err => console.error(`[v2-${mode} #${v2Count}] Store failed:`, err));
     }
 
@@ -628,7 +610,8 @@ V2_SCRIPT = r"""
                 callback: (token) => {
                     clearTimeout(timeout);
                     sendToken(token, "checkbox").then(() => {
-                        // page will reload via server-side trigger; no need to re-render
+                        updateStatus(`Token #${v2Count} stored! New widget in 3s...`);
+                        setTimeout(renderCheckbox, 3000);
                     });
                 },
                 'error-callback':   () => { clearTimeout(timeout); updateStatus('Challenge failed. New widget in 5s...');  setTimeout(renderCheckbox, 5000); },
@@ -670,7 +653,7 @@ V3_SCRIPT = r"""
     const SERVER_URL   = "http://localhost:5000/api";
     const SITE_KEY     = "6Led_uYrAAAAAKjxDIF58fgFtX3t8loNAK85bW9I";
     const ACTION       = "chat_submit";
-    const MIN_INTERVAL = 12;
+    const MIN_INTERVAL = 15;
     const MAX_INTERVAL = 18;
 
     let tokenCount = 0;
@@ -696,13 +679,11 @@ V3_SCRIPT = r"""
                             version: "v3",
                             action: ACTION,
                             harvest_number: tokenCount,
-                            source_url: window.location.href,
-                            _reload_after: true
+                            source_url: window.location.href
                         })
                     }).then(res => res.json()).then(data => {
                         console.log(`[v3 #${tokenCount}] Stored. Total: ${data.total_count}`);
                         window.__RECAPTCHA_TOKEN__ = token;
-                        // page reloads server-side; scheduleNext only needed if reload doesn't happen
                         scheduleNext();
                     });
                 }).catch(err => { console.error("[v3] Error:", err); scheduleNext(); });
@@ -775,7 +756,6 @@ DASHBOARD_HTML = """<!DOCTYPE html>
   .badge.idle          { background: #1c1c2a; color: #9ca3af;  border: 1px solid #374151; }
   .badge.harvesting_v2 { background: #2a1c1c; color: #f87171;  border: 1px solid #991b1b; }
   .badge.harvesting_v3 { background: #1c1c2a; color: #60a5fa;  border: 1px solid #1d4ed8; }
-  .badge.reloading     { background: #2a2a1c; color: #facc15;  border: 1px solid #854d0e; }
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn { padding: 7px 14px; border: none; border-radius: 7px; cursor: pointer; font-size: 12px; font-weight: 600; transition: opacity 0.15s, transform 0.1s; }
   .btn:hover   { opacity: 0.85; transform: translateY(-1px); }
@@ -856,7 +836,7 @@ function renderWindows(windows) {
   container.innerHTML = windows.map(w => {
     const bc      = w.status || 'loading';
     const bt      = bc.replace(/_/g, ' ').toUpperCase();
-    const isReady = w.status !== 'loading' && w.status !== 'reloading';
+    const isReady = w.status !== 'loading';
     const dis     = !isReady ? 'disabled' : '';
     return `
     <div class="window-card">
@@ -896,7 +876,7 @@ async function refresh() {
     const fresh = all.filter(t => {
       try { return (now - new Date(t.timestamp_utc).getTime()) / 1000 < 120; } catch { return false; }
     }).length;
-    const ready = windows.filter(w => w.status !== 'loading' && w.status !== 'reloading').length;
+    const ready = windows.filter(w => w.status !== 'loading').length;
 
     document.getElementById('stat-total').textContent = all.length;
     document.getElementById('stat-v2').textContent    = v2;
@@ -965,79 +945,7 @@ async def store_token(request: Request):
     token   = data.get("token", "")
     preview = (token[:40] + "...") if len(token) > 40 else token
     print(f"[token] {version:<14} {action:<22} {preview}  (total on disk: {total})")
-
-    # ── Auto-reload: triggered for v2 and v3 harvester tokens only ──────────
-    # Excluded: v2_initial (initial page load) and v2_ondemand (invisible/manual).
-    # Included: version == "v2" (checkbox/invisible harvester) or "v3".
-    should_reload = data.get("_reload_after", False) and version in ("v2", "v3")
-    if should_reload:
-        window_id = data.get("window_id", -1)
-        # Find the window by id or fall back to scanning all windows
-        target_wid = None
-        for wid, w in _windows.items():
-            if w.get("id") == window_id or window_id == -1:
-                target_wid = wid
-                if window_id != -1:
-                    break
-        if target_wid is not None and _windows[target_wid].get("status") not in ("loading", "reloading"):
-            asyncio.create_task(_reload_window_after_token(target_wid, version))
-
     return {"total_count": total, "ok": True}
-
-
-async def _reload_window_after_token(window_id: int, version: str):
-    """
-    Reload a window/tab after a v2 or v3 token is harvested, then
-    re-run the full ready flow (blocker, ready signal, cf cookies, mouse mover).
-    If FIVE_GAIN is active the final navigation targets arena.ai/c/<eval_id>.
-    """
-    label = "tab" if TABS else "window"
-    w = _windows.get(window_id)
-    if not w:
-        return
-
-    page: Page    = w.get("page")
-    context       = w.get("context")
-    prev_status   = w.get("status", "ready")
-
-    if not page or not context:
-        return
-
-    print(f"[{label} {window_id}] 🔄 Token received ({version}) — reloading page...")
-    _windows[window_id]["status"] = "reloading"
-
-    try:
-        await page.reload(wait_until="domcontentloaded", timeout=60000)
-        await asyncio.sleep(2)
-    except Exception as e:
-        print(f"[{label} {window_id}] Reload error: {e}")
-        _windows[window_id]["status"] = prev_status
-        return
-
-    # If FIVE_GAIN: navigate to the eval URL after reload
-    if FIVE_GAIN and _EVAL_ID:
-        target_url = f"https://arena.ai/c/{_EVAL_ID}"
-        print(f"[{label} {window_id}] 5_GAIN: navigating to {target_url}")
-        try:
-            await page.goto(target_url, wait_until="domcontentloaded", timeout=60000)
-            await asyncio.sleep(2)
-        except Exception as e:
-            print(f"[{label} {window_id}] 5_GAIN navigation error: {e}")
-
-    # Re-run blocker
-    try:
-        await page.evaluate(BLOCKER_SCRIPT)
-    except Exception as e:
-        print(f"[{label} {window_id}] Post-reload blocker error: {e}")
-
-    # Re-mark ready
-    try:
-        await page.evaluate(READY_SIGNAL_SCRIPT, window_id)
-    except Exception as e:
-        print(f"[{label} {window_id}] Post-reload ready signal error: {e}")
-        _windows[window_id]["status"] = "ready"
-
-    print(f"[{label} {window_id}] ✅ Reload complete — back to ready.")
 
 
 @app.get("/api/tokens")
@@ -1112,13 +1020,7 @@ async def v2_start(window_id: int):
     if not w:
         raise HTTPException(status_code=404, detail="Window not found")
     try:
-        # Inject window_id into V2_SCRIPT so tokens carry the correct window_id
-        script = V2_SCRIPT.replace(
-            'source_url: window.location.href,',
-            f'source_url: window.location.href, window_id: {window_id},',
-            1  # first occurrence only (v2 sendToken)
-        )
-        await w["page"].evaluate(script)
+        await w["page"].evaluate(V2_SCRIPT)
         w["status"] = "harvesting_v2"
         return {"ok": True, "status": "harvesting_v2"}
     except Exception as e:
@@ -1144,13 +1046,7 @@ async def v3_start(window_id: int):
     if not w:
         raise HTTPException(status_code=404, detail="Window not found")
     try:
-        # Inject window_id into V3_SCRIPT so tokens carry the correct window_id
-        script = V3_SCRIPT.replace(
-            'source_url: window.location.href,',
-            f'source_url: window.location.href, window_id: {window_id},',
-            1  # first occurrence only (v3 harvest)
-        )
-        await w["page"].evaluate(script)
+        await w["page"].evaluate(V3_SCRIPT)
         w["status"] = "harvesting_v3"
         return {"ok": True, "status": "harvesting_v3"}
     except Exception as e:
@@ -1592,14 +1488,9 @@ async def setup_window(playwright, window_id: int):
 
     _windows[window_id] = {"id": window_id, "status": "loading", "page": page, "context": context}
 
-    # ── Determine initial landing URL ──────────────────────────
-    # If FIVE_GAIN is active we start at arena.ai for the auth flow, then
-    # navigate to the eval URL as the final step after ready.
-    initial_url = "https://arena.ai"
-
-    print(f"[{label} {window_id}] Navigating to {initial_url}...")
+    print(f"[{label} {window_id}] Navigating to arena.ai...")
     try:
-        await page.goto(initial_url, wait_until="domcontentloaded", timeout=60000)
+        await page.goto("https://arena.ai", wait_until="domcontentloaded", timeout=60000)
     except Exception as e:
         print(f"[{label} {window_id}] Navigation warning: {e}")
 
@@ -1629,17 +1520,6 @@ async def setup_window(playwright, window_id: int):
 
     if TABS:
         await _save_tab_cookies(window_id)
-
-    # ── FIVE_GAIN: navigate to eval URL after auth + reload ───────
-    if FIVE_GAIN and _EVAL_ID:
-        target_url = f"https://arena.ai/c/{_EVAL_ID}"
-        print(f"[{label} {window_id}] 5_GAIN: navigating to {target_url}...")
-        await asyncio.sleep(3)  # brief settle before final navigation
-        try:
-            await page.goto(target_url, wait_until="domcontentloaded", timeout=60000)
-            await asyncio.sleep(2)
-        except Exception as e:
-            print(f"[{label} {window_id}] 5_GAIN navigation error: {e}")
 
     print(f"[{label} {window_id}] Marking as ready...")
     try:
@@ -1708,8 +1588,6 @@ async def run_browsers(server_ready_event: asyncio.Event):
         print(f"\n✅ {N} {label} launched.")
         print(f"   Dashboard  : http://localhost:{SERVER_PORT}")
         print(f"   Token file : {TOKENS_FILE}  ← read by modula.py / main.py")
-        if FIVE_GAIN:
-            print(f"   5_GAIN     : arena.ai/c/{_EVAL_ID}")
 
         if TABS:
             asyncio.create_task(tab_switcher())
@@ -1737,7 +1615,6 @@ async def main():
     print(f"  Extensions     : {EXTENSIONS}")
     print(f"  Cookies mode   : {COOKIES}")
     print(f"  Auto Login     : {AUTO_LOGIN}{(' (' + _AUTO_LOGIN_EMAIL + ')') if AUTO_LOGIN else ''}")
-    print(f"  5_GAIN         : {FIVE_GAIN}{(' → arena.ai/c/' + _EVAL_ID) if FIVE_GAIN and _EVAL_ID else ''}")
     print(f"  Output file    : {TOKENS_FILE}  (modula.py compatible)")
     print(f"  Dashboard      : http://localhost:{SERVER_PORT}")
     print("=" * 55)

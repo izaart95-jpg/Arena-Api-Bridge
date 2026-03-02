@@ -30,6 +30,7 @@ Now you can run main.py
 
 📺 [Watch the usage walkthrough on YouTube](https://youtu.be/hPmg9oMS3e8)
 
+Use Lmarena Credentials From Video To Test Quickly or First Time
 
 ### Flags
 
@@ -136,5 +137,7 @@ Required when `COOKIES=True`. Retrieve these values from your browser's DevTools
 
 ---
 
+### To change models select from models.json and edit in config.json
 
+---
 

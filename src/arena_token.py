@@ -33,24 +33,39 @@ from playwright.async_api import async_playwright, BrowserContext, Page
 # ============================================================
 
 CUSTOM = True
-# If CUSTOM=True, set PATH to your browser executable.
-#
-#   Linux Brave ........ "/usr/bin/brave-browser"
-#   Linux Chrome ....... "/usr/bin/google-chrome"
-#   Linux Chromium ..... "/usr/bin/chromium-browser"
-#
-#   Windows Brave ...... r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
-#   Windows Chrome ..... r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-#   Windows Edge ....... r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-#
-#   macOS Brave ........ "/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"
-#   macOS Chrome ....... "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-#   macOS Chromium ..... "/Applications/Chromium.app/Contents/MacOS/Chromium"
 PATH = "/path/to/browser/must/be/chromium"  # Brave is recommended
-
 N = 1  # number of windows (TABS=False) or tabs (TABS=True)
-
 EXTENSIONS = False
+EXTENSIONS_DIR = "/path/to/extensions/"  # Download RektCaptcha
+CUS_PROFILE = False
+PROFILE_PATH = ""
+TABS = False   # False = N separate browser windows  |  True = N tabs in one window
+SERVER_PORT = 5000
+AUTO_LOGIN = True
+
+# ============================================================
+# TOKENS FILE — output compatible with modula.py / main.py
+# ============================================================
+
+TOKENS_FILE = "tokens.json"
+CONFIG_FILE  = "config.json"
+
+# ============================================================
+
+# ============================================================
+# COOKIE INJECTION — edit these when COOKIES=True
+# ============================================================
+
+COOKIES = False
+# When COOKIES=True the harvester will inject auth cookies into each context.
+COOKIE_V1 = ""
+# Paste the full value for arena-auth-prod-v1.0 here.
+
+COOKIE_V2 = ""
+# Paste the full value for arena-auth-prod-v1.1 here.
+
+
+
 # If EXTENSIONS=True you MUST set EXTENSIONS_DIR to the Extensions folder of
 # the browser profile you want to load extensions from.
 # Leave as "" only if EXTENSIONS=False.
@@ -72,12 +87,8 @@ EXTENSIONS = False
 #   macOS Brave ........ "/Users/USERNAME/Library/Application Support/BraveSoftware/Brave-Browser/Default/Extensions"
 #   macOS Chrome ....... "/Users/USERNAME/Library/Application Support/Google/Chrome/Default/Extensions"
 #   macOS Chromium ..... "/Users/USERNAME/Library/Application Support/Chromium/Default/Extensions"
-EXTENSIONS_DIR = "/path/to/extensions/"  # Download RektCaptcha
-# Get Extensions file in Default/EXTENSIONS from browser://version
 
-TABS = False   # False = N separate browser windows  |  True = N tabs in one window
 
-CUS_PROFILE = False
 # If CUS_PROFILE=True, ALL contexts/windows use PROFILE_PATH as their
 # user_data_dir instead of the auto-generated harvester_profiles/ dirs.
 #
@@ -87,23 +98,8 @@ CUS_PROFILE = False
 #   Windows Chrome ..... r"C:\Users\USERNAME\AppData\Local\Google\Chrome\User Data"
 #   macOS Brave ........ "/Users/USERNAME/Library/Application Support/BraveSoftware/Brave-Browser"
 #   macOS Chrome ....... "/Users/USERNAME/Library/Application Support/Google/Chrome"
-PROFILE_PATH = ""
 
-# ============================================================
-# COOKIE INJECTION — edit these when COOKIES=True
-# ============================================================
 
-COOKIES = False
-# When COOKIES=True the harvester will inject auth cookies into each context.
-COOKIE_V1 = ""
-# Paste the full value for arena-auth-prod-v1.0 here.
-
-COOKIE_V2 = ""
-# Paste the full value for arena-auth-prod-v1.1 here.
-
-SERVER_PORT = 5000
-
-AUTO_LOGIN = True
 # When AUTO_LOGIN=True and COOKIES=False, the harvester will automatically
 # sign in to arena.ai for each browser window/tab using credentials you enter
 # in the terminal at startup.
@@ -122,14 +118,7 @@ AUTO_LOGIN = True
 # NOTE: AUTO_LOGIN=True is incompatible with COOKIES=True — an error is raised
 #       at startup if both are enabled simultaneously.
 
-# ============================================================
-# TOKENS FILE — output compatible with modula.py / main.py
-# ============================================================
 
-TOKENS_FILE = "tokens.json"
-CONFIG_FILE  = "config.json"
-
-# ============================================================
 
 PROFILES_DIR = Path("harvester_profiles")
 
@@ -653,7 +642,7 @@ V3_SCRIPT = r"""
     const SERVER_URL   = "http://localhost:5000/api";
     const SITE_KEY     = "6Led_uYrAAAAAKjxDIF58fgFtX3t8loNAK85bW9I";
     const ACTION       = "chat_submit";
-    const MIN_INTERVAL = 15;
+    const MIN_INTERVAL = 12;
     const MAX_INTERVAL = 18;
 
     let tokenCount = 0;
