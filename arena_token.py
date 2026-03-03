@@ -65,6 +65,28 @@ FIVE_GAIN = False   # set to True to enable (AUTO_LOGIN must also be True)
 TUNING = True
 
 # ============================================================
+# HARD_TUNING — Nuke and rebuild the browser profile on each reload
+# ============================================================
+# Requires TUNING=True. Incompatible with CUS_PROFILE=True (raises error).
+#
+# When True: instead of a simple page.reload(), HARD_TUNING performs a full
+# profile wipe and browser context rebuild on every token cycle:
+#   1. Save the 4 essential cookies to RAM:
+#        arena-auth-prod-v1.0, arena-auth-prod-v1.1, __cf_bm, cf_clearance
+#   2. Close the existing browser context
+#   3. Delete the profile directory from disk entirely
+#   4. Launch a brand-new persistent context at the same profile path
+#   5. Re-inject the saved cookies into the fresh context
+#   6. Navigate to arena.ai (or arena.ai/c/<eval_id> if FIVE_GAIN=True)
+#   7. Run blocker → ready signal → re-inject active harvester script
+#
+# Effect: each harvest cycle starts with a completely clean browser fingerprint
+# (no cached data, no stale cookies beyond the 4 saved ones, fresh localStorage).
+# This makes each token request look like a fresh browser session to reCAPTCHA.
+
+HARD_TUNING = False   # set to True to enable (TUNING must also be True)
+
+# ============================================================
 # TOKENS FILE — output compatible with modula.py / main.py
 # ============================================================
 
@@ -185,6 +207,19 @@ if FIVE_GAIN and not AUTO_LOGIN:
     raise RuntimeError(
         "FIVE_GAIN=True requires AUTO_LOGIN=True.\n"
         "Enable AUTO_LOGIN or set FIVE_GAIN=False."
+    )
+
+if HARD_TUNING and not TUNING:
+    raise RuntimeError(
+        "HARD_TUNING=True requires TUNING=True.\n"
+        "HARD_TUNING is an enhancement of TUNING — enable TUNING first."
+    )
+
+if HARD_TUNING and CUS_PROFILE:
+    raise RuntimeError(
+        "HARD_TUNING=True is incompatible with CUS_PROFILE=True.\n"
+        "HARD_TUNING wipes and rebuilds the profile directory on each cycle.\n"
+        "Using your real browser profile would destroy it. Set CUS_PROFILE=False."
     )
 
 # ── Collect AUTO_LOGIN credentials once at startup (before browser launch) ────
@@ -999,10 +1034,19 @@ async def store_token(request: Request):
 async def _reload_window_after_token(window_id: int, version: str):
     """
     Reload a window/tab after a v2 or v3 token is harvested, then
-    re-run the full ready flow (blocker, ready signal, cf cookies, mouse mover)
-    and re-inject the active harvester script so harvesting continues automatically.
-    If FIVE_GAIN is active the final navigation targets arena.ai/c/<eval_id>.
-    Only runs when TUNING=True.
+    re-run the full ready flow (blocker, ready signal, re-inject harvester).
+
+    TUNING=True (standard):  page.reload() — fast, keeps existing profile.
+    HARD_TUNING=True:        full profile wipe + fresh context rebuild each cycle.
+      Steps:
+        1. Save 4 cookies from the live context into RAM:
+               arena-auth-prod-v1.0, arena-auth-prod-v1.1, __cf_bm, cf_clearance
+        2. Close the browser context (releases file locks on profile dir)
+        3. Delete the profile directory from disk entirely
+        4. Launch a brand-new persistent context at the same profile path
+        5. Re-inject the 4 saved cookies into the fresh context
+        6. Navigate to arena.ai  (or arena.ai/c/<eval_id> if FIVE_GAIN=True)
+        7. Blocker → ready signal → re-inject active harvester script
     """
     label = "tab" if TABS else "window"
     w = _windows.get(window_id)
@@ -1013,8 +1057,7 @@ async def _reload_window_after_token(window_id: int, version: str):
     context       = w.get("context")
     prev_status   = w.get("status", "ready")
 
-    # If the stop button was clicked while the token POST was in-flight,
-    # active_script will be None — bail out, no reload.
+    # If stop was clicked while token POST was in-flight — bail out.
     active_script  = w.get("active_script")
     active_version = w.get("active_version")
     if not active_script or not active_version:
@@ -1024,26 +1067,140 @@ async def _reload_window_after_token(window_id: int, version: str):
     if not page or not context:
         return
 
-    print(f"[{label} {window_id}] 🔄 Token received ({version}) — reloading page...")
-    _windows[window_id]["status"] = "reloading"
+    # ── HARD_TUNING path ──────────────────────────────────────────────────────
+    if HARD_TUNING:
+        print(f"[{label} {window_id}] 💥 HARD_TUNING: saving cookies, wiping profile, rebuilding context...")
+        _windows[window_id]["status"] = "reloading"
 
-    try:
-        await page.reload(wait_until="domcontentloaded", timeout=60000)
-        await asyncio.sleep(2)
-    except Exception as e:
-        print(f"[{label} {window_id}] Reload error: {e}")
-        _windows[window_id]["status"] = prev_status
-        return
+        # ── 1. Save the 4 essential cookies to RAM ────────────────────────────
+        HARD_COOKIE_NAMES = {
+            "arena-auth-prod-v1.0",
+            "arena-auth-prod-v1.1",
+            "__cf_bm",
+            "cf_clearance",
+        }
+        saved_cookies: list[dict] = []
+        try:
+            all_cookies = await context.cookies(["https://arena.ai"])
+            saved_cookies = [c for c in all_cookies if c.get("name") in HARD_COOKIE_NAMES]
+            for c in saved_cookies:
+                print(f"[{label} {window_id}]   💾 saved cookie: {c['name']} ({len(c.get('value',''))} chars)")
+        except Exception as e:
+            print(f"[{label} {window_id}]   ⚠ Cookie save error: {e}")
 
-    # If FIVE_GAIN: navigate to the eval URL after reload
-    if FIVE_GAIN and _EVAL_ID:
-        target_url = f"https://arena.ai/c/{_EVAL_ID}"
-        print(f"[{label} {window_id}] 5_GAIN: navigating to {target_url}")
+        # ── 2. Close the existing browser context ─────────────────────────────
+        try:
+            await context.close()
+            print(f"[{label} {window_id}]   ✓ Context closed")
+        except Exception as e:
+            print(f"[{label} {window_id}]   ⚠ Context close error: {e}")
+
+        # ── 3. Delete the profile directory from disk ─────────────────────────
+        slot = f"tab_{window_id}" if TABS else f"window_{window_id}"
+        profile_dir = PROFILES_DIR / slot
+        try:
+            import shutil
+            if profile_dir.exists():
+                shutil.rmtree(profile_dir)
+                print(f"[{label} {window_id}]   ✓ Profile wiped: {profile_dir}")
+            profile_dir.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            print(f"[{label} {window_id}]   ⚠ Profile wipe error: {e}")
+
+        # ── 4. Launch a fresh persistent context at the same profile path ─────
+        pw = _playwright_instance
+        if pw is None:
+            print(f"[{label} {window_id}]   ✗ No playwright instance — cannot rebuild context.")
+            _windows[window_id]["status"] = "ready"
+            return
+
+        try:
+            args = _BASE_ARGS + [
+                f"--window-position={100 + window_id * 40},{50 + window_id * 40}",
+            ] + _get_extension_args()
+            launch_kwargs = dict(user_data_dir=str(profile_dir), headless=False, args=args)
+            if CUSTOM and PATH:
+                launch_kwargs["executable_path"] = PATH
+
+            new_context: BrowserContext = await pw.chromium.launch_persistent_context(**launch_kwargs)
+            await new_context.add_init_script(STEALTH_SCRIPT)
+            new_page: Page = await new_context.new_page()
+            await new_page.set_viewport_size({"width": 1280, "height": 800})
+            print(f"[{label} {window_id}]   ✓ Fresh context launched")
+        except Exception as e:
+            print(f"[{label} {window_id}]   ✗ Context relaunch failed: {e}")
+            _windows[window_id]["status"] = "ready"
+            return
+
+        # Update global window state with new context + page
+        _windows[window_id]["context"] = new_context
+        _windows[window_id]["page"]    = new_page
+        page    = new_page
+        context = new_context
+
+        # ── 5. Re-inject the 4 saved cookies into the fresh context ──────────
+        if saved_cookies:
+            try:
+                # Sanitize: remove fields Playwright doesn't accept on add_cookies
+                clean = []
+                for c in saved_cookies:
+                    entry = {
+                        "name":     c["name"],
+                        "value":    c["value"],
+                        "domain":   c.get("domain", ".arena.ai"),
+                        "path":     c.get("path", "/"),
+                        "secure":   c.get("secure", True),
+                        "httpOnly": c.get("httpOnly", False),
+                        "sameSite": c.get("sameSite", "Lax"),
+                    }
+                    if c.get("expires", -1) > 0:
+                        entry["expires"] = c["expires"]
+                    clean.append(entry)
+                await new_context.add_cookies(clean)
+                print(f"[{label} {window_id}]   ✓ {len(clean)} cookies re-injected into fresh context")
+            except Exception as e:
+                print(f"[{label} {window_id}]   ⚠ Cookie re-inject error: {e}")
+
+        # ── 6. Navigate to target URL ─────────────────────────────────────────
+        if FIVE_GAIN and _EVAL_ID:
+            target_url = f"https://arena.ai/c/{_EVAL_ID}"
+        else:
+            target_url = "https://arena.ai"
+
+        print(f"[{label} {window_id}]   → Navigating to {target_url}")
         try:
             await page.goto(target_url, wait_until="domcontentloaded", timeout=60000)
             await asyncio.sleep(2)
         except Exception as e:
-            print(f"[{label} {window_id}] 5_GAIN navigation error: {e}")
+            print(f"[{label} {window_id}]   ⚠ Navigation error: {e}")
+
+        # Start a fresh mouse mover for the new page
+        asyncio.create_task(mouse_mover(page, window_id))
+
+    # ── Standard TUNING path (simple reload) ─────────────────────────────────
+    else:
+        print(f"[{label} {window_id}] 🔄 Token received ({version}) — reloading page...")
+        _windows[window_id]["status"] = "reloading"
+
+        try:
+            await page.reload(wait_until="domcontentloaded", timeout=60000)
+            await asyncio.sleep(2)
+        except Exception as e:
+            print(f"[{label} {window_id}] Reload error: {e}")
+            _windows[window_id]["status"] = prev_status
+            return
+
+        # If FIVE_GAIN: navigate to eval URL after reload
+        if FIVE_GAIN and _EVAL_ID:
+            target_url = f"https://arena.ai/c/{_EVAL_ID}"
+            print(f"[{label} {window_id}] 5_GAIN: navigating to {target_url}")
+            try:
+                await page.goto(target_url, wait_until="domcontentloaded", timeout=60000)
+                await asyncio.sleep(2)
+            except Exception as e:
+                print(f"[{label} {window_id}] 5_GAIN navigation error: {e}")
+
+    # ── Shared post-reload steps (both TUNING and HARD_TUNING) ───────────────
 
     # Re-run blocker
     try:
@@ -1056,7 +1213,7 @@ async def _reload_window_after_token(window_id: int, version: str):
         await page.evaluate(READY_SIGNAL_SCRIPT, window_id)
     except Exception as e:
         print(f"[{label} {window_id}] Post-reload ready signal error: {e}")
-        _windows[window_id]["status"] = active_version == "v2" and "harvesting_v2" or "harvesting_v3"
+        _windows[window_id]["status"] = "harvesting_v2" if active_version == "v2" else "harvesting_v3"
 
     # Re-check: if stop was clicked during the reload, don't re-inject
     if _windows[window_id].get("active_script") is None:
@@ -1069,7 +1226,8 @@ async def _reload_window_after_token(window_id: int, version: str):
         await page.evaluate(active_script)
         status = "harvesting_v2" if active_version == "v2" else "harvesting_v3"
         _windows[window_id]["status"] = status
-        print(f"[{label} {window_id}] ✅ Reload complete — {active_version} harvester running.")
+        mode_label = "HARD_TUNING" if HARD_TUNING else "TUNING"
+        print(f"[{label} {window_id}] ✅ {mode_label} cycle complete — {active_version} harvester running.")
     except Exception as e:
         print(f"[{label} {window_id}] Re-inject error: {e}")
         _windows[window_id]["status"] = "ready"
@@ -1525,6 +1683,7 @@ _BASE_ARGS = [
 _shared_browser = None
 _shared_context = None
 _tab_cookie_store: dict[int, list] = {}
+_playwright_instance = None   # set during run_browsers; used by HARD_TUNING
 
 
 def _resolve_profile_dir(slot: str) -> Path:
@@ -1743,6 +1902,8 @@ async def run_browsers(server_ready_event: asyncio.Event):
 
     PROFILES_DIR.mkdir(exist_ok=True)
     async with async_playwright() as pw:
+        global _playwright_instance
+        _playwright_instance = pw
         for i in range(N):
             await setup_window(pw, i)
             await asyncio.sleep(0.8)
@@ -1782,6 +1943,7 @@ async def main():
     print(f"  Auto Login     : {AUTO_LOGIN}{(' (' + _AUTO_LOGIN_EMAIL + ')') if AUTO_LOGIN else ''}")
     print(f"  5_GAIN         : {FIVE_GAIN}{(' → arena.ai/c/' + _EVAL_ID) if FIVE_GAIN and _EVAL_ID else ''}")
     print(f"  Tuning (reload): {TUNING}")
+    print(f"  Hard Tuning    : {HARD_TUNING}")
     print(f"  Output file    : {TOKENS_FILE}  (modula.py compatible)")
     print(f"  Dashboard      : http://localhost:{SERVER_PORT}")
     print("=" * 55)
