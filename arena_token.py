@@ -639,8 +639,8 @@ V2_SCRIPT = r"""
         panel.appendChild(container);
         const closeBtn = document.createElement('div');
         closeBtn.style.cssText = 'color:#6b7280;font-size:11px;margin-top:8px;cursor:pointer;text-align:center;';
-        closeBtn.textContent = 'stop: window.__STOP_V2_HARVEST__()';
-        closeBtn.onclick = () => window.__STOP_V2_HARVEST__();
+        closeBtn.textContent = 'stop: window.__ph_capture_event()';
+        closeBtn.onclick = () => window.__ph_capture_event();
         panel.appendChild(closeBtn);
         document.body.appendChild(panel);
     }
@@ -687,15 +687,15 @@ V2_SCRIPT = r"""
         }
     }
 
-    window.__STOP_V2_HARVEST__ = () => {
+    window.__ph_capture_event = () => {
         if (currentTimeoutId) { clearTimeout(currentTimeoutId); currentTimeoutId = null; }
         const panel = document.getElementById('__v2_harvest_panel');
         if (panel) panel.remove();
         panelCreated = false;
         console.log(`[v2] Stopped. Tokens: ${v2Count}`);
     };
-    window.__V2_SWITCH_INVISIBLE__ = () => { window.__STOP_V2_HARVEST__(); currentMode = "invisible"; invisibleErrors = 0; harvestInvisible(); };
-    window.__V2_SWITCH_CHECKBOX__  = () => { window.__STOP_V2_HARVEST__(); currentMode = "checkbox";  startCheckboxMode(); };
+    window.__dd_rum_synthetics = () => { window.__ph_capture_event(); currentMode = "invisible"; invisibleErrors = 0; harvestInvisible(); };
+    window.__dd_rum_init  = () => { window.__ph_capture_event(); currentMode = "checkbox";  startCheckboxMode(); };
 
     console.log(`v2 Harvester started (mode: ${FORCE_MODE})`);
     if (FORCE_MODE === "checkbox") {
@@ -746,7 +746,7 @@ V3_SCRIPT = r"""
                         })
                     }).then(res => res.json()).then(data => {
                         console.log(`[v3 #${tokenCount}] Stored. Total: ${data.total_count}`);
-                        window.__RECAPTCHA_TOKEN__ = token;
+                        window.__ld_client_token = token;
                         // page reloads server-side; scheduleNext only needed if reload doesn't happen
                         scheduleNext();
                     });
@@ -760,7 +760,7 @@ V3_SCRIPT = r"""
         currentTimeoutId = setTimeout(harvest, next * 1000);
     }
 
-    window.__STOP_HARVEST__ = () => {
+    window.__ph_reset_session = () => {
         if (currentTimeoutId) { clearTimeout(currentTimeoutId); currentTimeoutId = null; }
         console.log("[v3] Stopped. Total captured:", tokenCount);
     };
@@ -1326,7 +1326,7 @@ async def v2_stop(window_id: int):
     if not w:
         raise HTTPException(status_code=404, detail="Window not found")
     try:
-        await w["page"].evaluate("if (typeof window.__STOP_V2_HARVEST__ === 'function') window.__STOP_V2_HARVEST__();")
+        await w["page"].evaluate("if (typeof window.__ph_capture_event === 'function') window.__ph_capture_event();")
         w["status"] = "idle"
         w["active_script"]  = None
         w["active_version"] = None
@@ -1362,7 +1362,7 @@ async def v3_stop(window_id: int):
     if not w:
         raise HTTPException(status_code=404, detail="Window not found")
     try:
-        await w["page"].evaluate("if (typeof window.__STOP_HARVEST__ === 'function') window.__STOP_HARVEST__();")
+        await w["page"].evaluate("if (typeof window.__ph_reset_session === 'function') window.__ph_reset_session();")
         w["status"] = "idle"
         w["active_script"]  = None
         w["active_version"] = None
