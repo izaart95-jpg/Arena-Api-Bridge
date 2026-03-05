@@ -4,6 +4,11 @@
 
 ---
 
+### New Update - Captcha Extension
+
+No Browser Automation or Heavy Workaround
+By the way its still experimental and only recommended as fallback or testing
+
 ### Sister projects
 #### [Deep Router - Deepseek Api](https://github.com/izaart95-jpg/DeepRouter)
 

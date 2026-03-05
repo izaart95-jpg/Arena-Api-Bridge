@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arena Harvester</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 420px; min-height: 300px; background: #0f0f1a; color: #e0e0e0; font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+  .header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 12px 16px; border-bottom: 1px solid #2a2a4e; display: flex; align-items: center; gap: 10px; }
+  .header h1 { font-size: 15px; font-weight: 700; color: #c084fc; }
+  .header .sub { font-size: 11px; color: #6b7280; margin-left: auto; }
+  .stats { display: flex; gap: 1px; background: #1e1e3a; border-bottom: 1px solid #2a2a4e; }
+  .stat { flex: 1; padding: 8px 4px; text-align: center; background: #12122a; }
+  .stat .val { font-size: 20px; font-weight: 700; color: #4ade80; }
+  .stat .lbl { font-size: 10px; color: #6b7280; margin-top: 2px; }
+  .section { padding: 10px 14px; }
+  .section-title { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .tab-card { background: #1a1a2e; border: 1px solid #2a2a4e; border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .tab-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .tab-title { font-size: 12px; font-weight: 600; color: #d1d5db; }
+  .tab-url { font-size: 10px; color: #4b5563; margin-top: 2px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge.idle { background:#1f2937; color:#9ca3af; }
+  .badge.harvesting_v2 { background:#14532d; color:#4ade80; }
+  .badge.harvesting_v3 { background:#1e3a5f; color:#60a5fa; }
+  .badge.reloading { background:#3b2d00; color:#fbbf24; }
+  .btn-row { display: flex; gap: 5px; margin-bottom: 5px; }
+  .btn { flex: 1; padding: 5px 4px; border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; transition: opacity 0.15s; }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .btn:not(:disabled):hover { opacity: 0.85; }
+  .btn.v2-start { background: #166534; color: #4ade80; }
+  .btn.v2-stop  { background: #3b1010; color: #f87171; }
+  .btn.v3-start { background: #1e3a5f; color: #60a5fa; }
+  .btn.v3-stop  { background: #2d1a3b; color: #a78bfa; }
+  .btn.inv-run  { background: #1f1a3b; color: #c084fc; }
+  .tab-info { font-size: 10px; color: #374151; margin-top: 4px; }
+  .config-toggle { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: #12122a; border-top: 1px solid #2a2a4e; border-bottom: 1px solid #2a2a4e; cursor: pointer; font-size: 11px; color: #6b7280; user-select: none; }
+  .config-toggle:hover { color: #9ca3af; }
+  .config-toggle .arrow { margin-left: auto; transition: transform 0.2s; }
+  .config-toggle.open .arrow { transform: rotate(180deg); }
+  .config-panel { background: #0f0f1a; padding: 12px 14px; border-bottom: 1px solid #2a2a4e; display: none; }
+  .config-panel.open { display: block; }
+  .cfg-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .cfg-label { font-size: 12px; color: #d1d5db; }
+  .cfg-sub { font-size: 10px; color: #6b7280; margin-top: 2px; }
+  .toggle-switch { position: relative; width: 36px; height: 20px; flex-shrink: 0; }
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider { position: absolute; inset: 0; background: #374151; border-radius: 20px; cursor: pointer; transition: background 0.2s; }
+  .toggle-slider:before { content: ""; position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; background: #e0e0e0; border-radius: 50%; transition: transform 0.2s; }
+  .toggle-switch input:checked + .toggle-slider { background: #7c3aed; }
+  .toggle-switch input:checked + .toggle-slider:before { transform: translateX(16px); }
+  .toggle-switch input:disabled + .toggle-slider { opacity: 0.4; cursor: not-allowed; }
+  .cfg-input { background: #1a1a2e; border: 1px solid #374151; border-radius: 6px; color: #e0e0e0; font-size: 12px; padding: 4px 8px; width: 100%; margin-top: 4px; }
+  .cfg-input:focus { outline: 1px solid #7c3aed; }
+  .save-btn { width: 100%; padding: 7px; background: #7c3aed; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; margin-top: 6px; }
+  .save-btn:hover { background: #6d28d9; }
+  .footer { padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; }
+  .footer-btn { font-size: 11px; padding: 4px 10px; border: 1px solid #374151; border-radius: 5px; background: transparent; color: #9ca3af; cursor: pointer; }
+  .footer-btn:hover { background: #1a1a2e; }
+  .footer-btn.danger { border-color: #7f1d1d; color: #f87171; }
+  .footer-btn.danger:hover { background: #1f0a0a; }
+  .empty { text-align: center; padding: 24px; color: #4b5563; }
+  .empty .icon { font-size: 28px; margin-bottom: 8px; }
+  .empty p { font-size: 12px; }
+  .empty a { color: #7c3aed; }
+  #toast { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%) translateY(40px); background: #1a1a2e; border: 1px solid #4b5563; border-radius: 8px; padding: 6px 14px; font-size: 12px; color: #e0e0e0; opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap; z-index: 9999; }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .err { color: #f87171; font-size: 11px; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span>🎯</span>
+  <h1>Arena Harvester</h1>
+  <span class="sub" id="refresh-info">Loading...</span>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="val" id="stat-total">–</div><div class="lbl">Total</div></div>
+  <div class="stat"><div class="val" id="stat-v2" style="color:#4ade80">–</div><div class="lbl">v2</div></div>
+  <div class="stat"><div class="val" id="stat-v3" style="color:#60a5fa">–</div><div class="lbl">v3</div></div>
+  <div class="stat"><div class="val" id="stat-fresh" style="color:#fbbf24">–</div><div class="lbl">Fresh</div></div>
+  <div class="stat"><div class="val" id="stat-active" style="color:#c084fc">–</div><div class="lbl">Active</div></div>
+</div>
+
+<div class="config-toggle" id="config-toggle">
+  ⚙ Settings
+  <span class="arrow">▾</span>
+</div>
+<div class="config-panel" id="config-panel">
+  <div class="cfg-row">
+    <div>
+      <div class="cfg-label">Server Port</div>
+      <div class="cfg-sub">Python server port (default 5000)</div>
+    </div>
+    <input class="cfg-input" id="cfg-port" type="number" min="1" max="65535" style="width:80px;margin:0;" value="5000">
+  </div>
+  <div class="cfg-row">
+    <div><div class="cfg-label">TUNING</div><div class="cfg-sub">Reload tab after each token</div></div>
+    <label class="toggle-switch"><input type="checkbox" id="cfg-tuning"><span class="toggle-slider"></span></label>
+  </div>
+  <div class="cfg-row">
+    <div><div class="cfg-label">HARD TUNING</div><div class="cfg-sub">Wipe cookies (keep auth) + fresh reload</div></div>
+    <label class="toggle-switch"><input type="checkbox" id="cfg-hard-tuning"><span class="toggle-slider"></span></label>
+  </div>
+  <div class="cfg-row">
+    <div><div class="cfg-label">FIVE_GAIN</div><div class="cfg-sub">Navigate to arena.ai/c/&lt;eval_id&gt;</div></div>
+    <label class="toggle-switch"><input type="checkbox" id="cfg-five-gain"><span class="toggle-slider"></span></label>
+  </div>
+  <div id="eval-id-row" style="display:none; margin-bottom:10px;">
+    <div class="cfg-label">Eval / Conversation ID</div>
+    <input class="cfg-input" id="cfg-eval-id" type="text" placeholder="e.g. abc123xyz">
+  </div>
+  <div id="cfg-error" class="err" style="display:none;"></div>
+  <button class="save-btn" id="btn-save-config">Save Settings</button>
+</div>
+
+<div class="section">
+  <div class="section-title">Arena.ai Tabs</div>
+  <div id="tabs-container">
+    <div class="empty"><div class="icon">🌐</div><p>No arena.ai tabs open.<br>Open <a id="arena-link" href="#">arena.ai</a> to start harvesting.</p></div>
+  </div>
+</div>
+
+<div class="footer">
+  <button class="footer-btn danger" id="btn-clear-tokens">🗑 Clear Tokens</button>
+  <button class="footer-btn" id="btn-refresh">↻ Refresh</button>
+</div>
+
+<div id="toast"></div>
+
+<script src="popup.js"></script>
+</body>
+</html>
