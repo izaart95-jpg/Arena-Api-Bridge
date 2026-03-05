@@ -45,6 +45,7 @@ Now you can run main.py
 ## Usage & Features - If you are having problems
 
 📺 [Watch the usage walkthrough on YouTube](https://youtu.be/hPmg9oMS3e8)
+
 📺 [Extension Usage](https://youtu.be/O-ssgydeuB0)
 
 Use Lmarena Credentials From Video To Test Quickly or First Time
