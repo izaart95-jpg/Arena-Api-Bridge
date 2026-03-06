@@ -15,6 +15,13 @@ Configure opencode (or any OpenAI-compatible client):
     base_url = "http://localhost:8000/v1"
     api_key  = "any-string"        # not validated, just required by clients
     model    = "arena"             # or whatever you like -- it's ignored internally
+
+Config flags:
+    MARKParser  (bool, default True)  – strip all markdown from streamed tokens.
+    CodeParser  (bool, default False) – only active when MARKParser is True;
+                                        makes the parser ONLY remove fenced code-block
+                                        fences (``` lines) and leave all other markdown
+                                        formatting intact.
 """
 
 from __future__ import annotations
@@ -100,6 +107,8 @@ def _ensure_config(cfg: dict) -> dict:
         "searchmodel": DEFAULT_SEARCH_MODEL,
         "thinkmodel":  DEFAULT_THINK_MODEL,
         "imgmodel":    DEFAULT_IMG_MODEL,
+        "MARKParser":  True,   # strip markdown from streamed output by default
+        "CodeParser":  False,  # when True (+ MARKParser), ONLY strip fenced code blocks
     }
     changed = any(k not in cfg for k in defaults)
     for k, v in defaults.items():
@@ -235,6 +244,152 @@ def _openai_chunk(content: str, finish: bool = False) -> str:
 
 
 # ============================================================
+# Markdown / CodeFence parsers
+# ============================================================
+
+class _StreamMarkdownStripper:
+    """
+    Stateful, token-by-token markdown stripper.
+
+    Accumulates tokens into a buffer, applies the chosen stripping mode,
+    and flushes clean text back to the caller.
+
+    Modes
+    -----
+    MARKParser=True, CodeParser=False  →  strip ALL markdown syntax.
+    MARKParser=True, CodeParser=True   →  strip ONLY fenced code-block
+                                          delimiters (``` lines); everything
+                                          else is left untouched.
+    MARKParser=False                   →  pass-through, no processing.
+    """
+
+    # Compiled once at class level
+    _FENCE_LINE   = re.compile(r'^```[^\n]*\n?')          # opening/closing fence
+    _HEADING      = re.compile(r'^#{1,6}\s+', re.M)
+    _BOLD_ITALIC  = re.compile(r'\*{1,3}([^*\n]+)\*{1,3}')
+    _UNDER_BI     = re.compile(r'_{1,3}([^_\n]+)_{1,3}')
+    _STRIKE       = re.compile(r'~~([^~\n]+)~~')
+    _INLINE_CODE  = re.compile(r'`{1,2}([^`]+)`{1,2}')
+    _BLOCKQUOTE   = re.compile(r'^\s*>\s?', re.M)
+    _HR           = re.compile(r'^[-*_]{3,}\s*$', re.M)
+    _IMAGE        = re.compile(r'!\[([^\]]*)\]\([^)]*\)')
+    _LINK         = re.compile(r'\[([^\]]+)\]\([^)]+\)')
+    _REF_LINK     = re.compile(r'\[([^\]]+)\]\[[^\]]*\]')
+    _LINK_DEF     = re.compile(r'^\[[^\]]+\]:\s+\S+.*$', re.M)
+    _UL           = re.compile(r'^\s*[-*+]\s+', re.M)
+    _OL           = re.compile(r'^\s*\d+\.\s+', re.M)
+    _TABLE_SEP    = re.compile(r'^\|?[\s:|-]+\|[\s:|-]*\|?\s*$', re.M)
+    _TABLE_PIPE   = re.compile(r'\|')
+    _MULTI_BLANK  = re.compile(r'\n{3,}')
+
+    def __init__(self, mark_parser: bool, code_parser: bool):
+        self.mark_parser  = mark_parser
+        # CodeParser is only meaningful when MARKParser is also on
+        self.code_parser  = code_parser and mark_parser
+        self._buf         = ""           # rolling accumulation buffer
+        self._in_fence    = False        # are we inside a fenced block?
+
+    # ------------------------------------------------------------------
+    # Public API
+    # ------------------------------------------------------------------
+
+    def feed(self, token: str) -> str:
+        """Accept one streamed token; return immediately-flushable clean text."""
+        if not self.mark_parser:
+            return token                 # pass-through
+
+        self._buf += token
+
+        # We need a newline boundary to safely process lines that contain
+        # markdown syntax (headings, fences, etc.).  Hold back the last
+        # incomplete line so we never accidentally split a pattern.
+        if "\n" in self._buf:
+            safe, self._buf = self._buf.rsplit("\n", 1)
+            return self._process(safe + "\n")
+        return ""
+
+    def flush(self) -> str:
+        """Call once after the stream ends to drain any buffered remainder."""
+        if not self.mark_parser or not self._buf:
+            return ""
+        out, self._buf = self._process(self._buf), ""
+        return out
+
+    # ------------------------------------------------------------------
+    # Internal processing
+    # ------------------------------------------------------------------
+
+    def _process(self, text: str) -> str:
+        if self.code_parser:
+            return self._strip_fences_only(text)
+        return self._strip_all(text)
+
+    def _strip_fences_only(self, text: str) -> str:
+        """Remove ``` opening/closing fence lines; keep everything else verbatim."""
+        lines = text.split("\n")
+        out   = []
+        for line in lines:
+            stripped = line.strip()
+            if stripped.startswith("```"):
+                # Toggle fence state; swallow the delimiter line entirely
+                self._in_fence = not self._in_fence
+                continue          # drop the fence line itself
+            out.append(line)
+        return "\n".join(out)
+
+    def _strip_all(self, text: str) -> str:
+        """Full markdown removal (same rules as strip_markdown.py)."""
+        # Fenced code blocks → keep inner content
+        def _unwrap_fence(m: re.Match) -> str:
+            self._in_fence = False   # reset after full block consumed
+            return m.group(1)
+
+        # Multi-line fenced blocks accumulate across tokens; handle open fences
+        # by stripping the delimiter line and tracking state.
+        lines, out = text.split("\n"), []
+        result_lines = []
+        for line in lines:
+            stripped = line.strip()
+            if stripped.startswith("```"):
+                self._in_fence = not self._in_fence
+                continue          # always drop fence delimiter
+            result_lines.append(line)
+        text = "\n".join(result_lines)
+
+        # Inline code
+        text = self._INLINE_CODE.sub(r'\1', text)
+        # HTML tags
+        text = re.sub(r'<[^>]+>', '', text)
+        # ATX headings
+        text = self._HEADING.sub('', text)
+        # Bold / italic
+        text = self._BOLD_ITALIC.sub(r'\1', text)
+        text = self._UNDER_BI.sub(r'\1', text)
+        # Strikethrough
+        text = self._STRIKE.sub(r'\1', text)
+        # Blockquotes
+        text = self._BLOCKQUOTE.sub('', text)
+        # Horizontal rules
+        text = self._HR.sub('', text)
+        # Images (keep alt text)
+        text = self._IMAGE.sub(r'\1', text)
+        # Links (keep link text)
+        text = self._LINK.sub(r'\1', text)
+        text = self._REF_LINK.sub(r'\1', text)
+        text = self._LINK_DEF.sub('', text)
+        # List markers
+        text = self._UL.sub('', text)
+        text = self._OL.sub('', text)
+        # Tables
+        text = self._TABLE_SEP.sub('', text)
+        text = self._TABLE_PIPE.sub(' ', text)
+        # Collapse excess blank lines
+        text = self._MULTI_BLANK.sub('\n\n', text)
+
+        return text
+
+
+# ============================================================
 # Core streaming generator
 # ============================================================
 
@@ -243,6 +398,12 @@ async def _stream_arena(prompt: str) -> AsyncIterator[str]:
     cfg      = _ensure_config(cfg)
     mode     = _detect_mode(cfg)
     model_id = _resolve_model(cfg, mode)
+
+    # Instantiate the stateful parser once per request
+    parser = _StreamMarkdownStripper(
+        mark_parser=cfg.get("MARKParser", True),
+        code_parser=cfg.get("CodeParser", False),
+    )
 
     recaptcha_token = _get_token()
 
@@ -348,8 +509,16 @@ async def _stream_arena(prompt: str) -> AsyncIterator[str]:
         if prefix == "a0":
             token = _decode_token(data)
             if token and not should_filter_content(token):
-                yield _openai_chunk(token)
+                # Feed through the stateful parser; emit only non-empty output
+                cleaned = parser.feed(token)
+                if cleaned:
+                    yield _openai_chunk(cleaned)
         # ag / ac / a2 silently dropped
+
+    # Flush any remaining buffered text
+    tail = parser.flush()
+    if tail:
+        yield _openai_chunk(tail)
 
     yield _openai_chunk("", finish=True)
     yield "data: [DONE]\n\n"
@@ -376,6 +545,11 @@ async def chat_completions(request: ChatCompletionRequest):
     OpenAI-compatible streaming chat endpoint.
     Accepts plain string OR content-part-list messages (as sent by opencode).
     Only assistant text tokens are forwarded; reasoning/citations/images are dropped.
+
+    Markdown stripping is controlled by two config flags:
+        MARKParser  (default True)  – strip all markdown.
+        CodeParser  (default False) – when True, ONLY strip fenced code-block
+                                      delimiters (overrides full-strip mode).
     """
     prompt = ""
     for msg in reversed(request.messages):
