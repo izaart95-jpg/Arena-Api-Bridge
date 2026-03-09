@@ -75,7 +75,6 @@ def _default_config() -> dict:
         "OPENPARSER":     True,
         "Tokenizer":      True,
         "AUTO_TOKEN":     True,
-        "v2_auth":        False,
         "searchmodel":    DEFAULT_SEARCH_MODEL,
         "thinkmodel":     DEFAULT_THINK_MODEL,
         "imgmodel":       DEFAULT_IMG_MODEL,
