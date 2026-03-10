@@ -7,7 +7,7 @@
 ## Arena-Api-Bridge provides two primary methods for token harvesting:
 ### 1. CaptchaExtensions — Stable extension-based approach with Rektcaptcha integration for v2 captcha
 
-### 2.Fallback Browser Automation — Two options:
+### 2. Fallback Browser Automation — Two options:
 
 #### - ```Camoufox``` — Experimental Firefox-based automation with fingerprint randomization
 
