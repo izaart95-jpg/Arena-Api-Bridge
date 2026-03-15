@@ -1,47 +1,57 @@
 # Arena-Api-Bridge — Beta
 
-> **Status:** Beta · ~90% complete — CAPTCHA bypass remains outstanding (Better but not guaranteed highest streak is 30 prompts without captcha error).
-
----
-# Overview
-## Arena-Api-Bridge provides two primary methods for token harvesting:
-### 1. CaptchaExtensions — Stable extension-based approach with Rektcaptcha integration for v2 captcha
-
-### 2. Fallback Browser Automation — Two options:
-
-#### - ```Camoufox``` — Experimental Firefox-based automation with fingerprint randomization
-
-#### - ```arena_token.py``` — Recommended production approach with Brave browser optimization Any chromium browser works brave is recommended
+> **Status:** Beta · ~90% complete — CAPTCHA bypass remains outstanding. Best recorded streak: 30 prompts without a CAPTCHA error (not guaranteed).
 
 ---
 
-### Note: Current Captcha-Extensions is the stable version if you are getting recaptcha valiation failed frequently try latest version of Extension from main repo https://github.com/izaart95-jpg/Captcha-Extension
+## Overview
+
+Arena-Api-Bridge provides two primary methods for token harvesting:
+
+**Method 1 — Captcha Extensions:** A stable, extension-based approach with Rektcaptcha integration for v2 CAPTCHA handling.
+
+**Method 2 — Fallback Browser Automation:** Two options are available:
+- **Camoufox** — Experimental Firefox-based automation with fingerprint randomization.
+- **arena_token.py** — Recommended production approach, optimized for Brave (any Chromium-based browser is supported).
+
+> **Note:** Captcha-Extensions is the stable recommended method. If you are frequently encountering reCAPTCHA validation failures, try the latest extension version from the main repo: [Captcha-Extension](https://github.com/izaart95-jpg/Captcha-Extension)
 
 ---
-##  Usage & Features - If you are having problems
 
-📺 [Watch the usage walkthrough on YouTube - Browser automation](https://youtu.be/hPmg9oMS3e8)
+## Usage & Walkthroughs
 
-📺 [Extension Usage](https://youtu.be/O-ssgydeuB0)
+- 📺 [Browser Automation Walkthrough (YouTube)](https://youtu.be/hPmg9oMS3e8)
+- 📺 [Extension Usage Walkthrough (YouTube)](https://youtu.be/O-ssgydeuB0)
 
-Use Lmarena Credentials From Video To Test Quickly or First Time
+> Use the LMArena credentials from the videos to test quickly or on first run.
 
-# Method 1: Captcha Extensions (Stable)
+---
 
-### The recommended stable solution for CAPTCHA handling. Features Rektcaptcha integration for improved success rates for checkbox captcha.
+## Method 1: Captcha Extensions (Stable)
 
-## Installation
+The recommended stable solution for CAPTCHA handling. Features Rektcaptcha integration for improved success rates on checkbox CAPTCHAs.
+
+### Installation
 ```bash
 git clone https://github.com/izaart95-jpg/Arena-Api-Bridge.git
 cd Arena-Api-Bridge
 pip install -r requirements.txt
 ```
-## Extension Setup
-#### - Open browser go to manage extensions turn on developer options select load unpacked naviagte to Arena-Api-Bridge/Captcha-Extension/extensionselect that folder
 
-# Method 2: Browser Automation (fallbak)
+### Extension Setup
 
-## 1. Quickstart - Install Dependencies
+1. Open your browser and navigate to **Manage Extensions**.
+2. Enable **Developer Mode**.
+3. Click **Load Unpacked**.
+4. Navigate to `Arena-Api-Bridge/Captcha-Extension/extension` and select that folder.
+
+---
+
+## Method 2: Browser Automation (Fallback)
+
+> **Note:** `arena_token.py` is recommended over `camoufox_harvester`. Camoufox is experimental.
+
+### 1. Install Dependencies
 ```bash
 git clone https://github.com/izaart95-jpg/Arena-Api-Bridge.git
 cd Arena-Api-Bridge
@@ -49,25 +59,22 @@ pip install -r requirements.txt
 playwright install chromium
 ```
 
----
-
-#### Note - arena_token.py is recommended over camoufox_harvester also camoufox_harvester is experimental 
-
-## 2. Configuration
+### 2. Configuration
 
 Open `arena_token.py` and edit the configuration block at the top of the file.
 
-**Optionally** - If you are getting recaptcha validation failed even with harvester running
-it is recommended to install Rektcaptcha Extensions Turn Extensions=True and configure
-Extensions_dir to extensions folder so you can use v2 harvester as fallback 
+**Optional — Rektcaptcha Fallback:**
+If you continue to receive reCAPTCHA validation failures even with the harvester running, it is recommended to install the Rektcaptcha extension, set `EXTENSIONS=True`, and configure `EXTENSIONS_DIR` to your extensions folder to enable the v2 harvester as a fallback.
 
-Start `arena_token.py` and wait for browser to be initialised open http://localhost:5000 in browser and  start v3 
+**Starting the harvester:**
 
-Recommended Browser Overall For Arena_token.py is Brave
+1. Run `arena_token.py` and wait for the browser to initialize.
+2. Open `http://localhost:5000` in your browser and start v3.
+3. You can now run `main.py`.
 
-Now you can run main.py 
+> **Recommended browser for `arena_token.py`:** Brave
 
-
+---
 
 ### 3. Flags
 
@@ -81,7 +88,9 @@ Now you can run main.py
 | `AUTO_LOGIN` | `True` = automated login and cookie fetching · `False` = manual login | `True` |
 | `COOKIES` | Inject stored auth cookies into each browser context | `False` |
 
-> ⚠️ **Compatibility note:** `AUTO_LOGIN=True` and `COOKIES=True` are mutually exclusive. An error is raised at startup if both are enabled simultaneously.
+> ⚠️ **Compatibility Note:** `AUTO_LOGIN=True` and `COOKIES=True` are mutually exclusive. An error is raised at startup if both are enabled simultaneously.
+
+---
 
 ### 4. Parameters
 
@@ -95,17 +104,18 @@ Now you can run main.py
 
 ---
 
-## 5. Parameter Reference
+### 5. Parameter Reference
 
-### `PATH` — Browser Executable
+#### `PATH` — Browser Executable
 
 Navigate to `chrome://version` in your browser and copy the **Executable Path** value.
 
-> **Only for Windows users:** Always use a raw string prefix `r"..."` to avoid backslash escape issues.
-> - ✅ PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-> - ❌ PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-> - ✅ EXTENSIONS_DIR = r"C:\Users\USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Extension"
-> - ❌ EXTENSIONS_DIR = "C:\Users\USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Extension"
+> **Windows users:** Always use a raw string prefix `r"..."` to avoid backslash escape issues.
+>
+> - ✅ `PATH = r"C:\Program Files\Google\Chrome\Application\chrome.exe"`
+> - ❌ `PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"`
+> - ✅ `EXTENSIONS_DIR = r"C:\Users\USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Extensions"`
+> - ❌ `EXTENSIONS_DIR = "C:\Users\USERNAME\AppData\Local\BraveSoftware\Brave-Browser\User Data\Default\Extensions"`
 
 **Default paths by platform:**
 
@@ -123,13 +133,13 @@ Navigate to `chrome://version` in your browser and copy the **Executable Path** 
 
 ---
 
-### 6. `EXTENSIONS_DIR` — Extensions Directory
+#### `EXTENSIONS_DIR` — Extensions Directory
 
 Required when `EXTENSIONS=True`. To locate it:
 
-1. Open your browser and navigate to `chrome://version`
-2. Find the **Profile Path** value
-3. Append `/Extensions` to that path
+1. Open your browser and navigate to `chrome://version`.
+2. Find the **Profile Path** value.
+3. Append `/Extensions` to that path.
 
 > At least one extension must be installed for the `Extensions` directory to exist.
 
@@ -149,7 +159,7 @@ Required when `EXTENSIONS=True`. To locate it:
 
 ---
 
-### 7. `PROFILE_PATH` — Browser Profile Directory
+#### `PROFILE_PATH` — Browser Profile Directory
 
 Required when `CUS_PROFILE=True`. All contexts will use this directory as `user_data_dir` instead of the auto-generated `harvester_profiles/` directories.
 
@@ -166,7 +176,7 @@ Required when `CUS_PROFILE=True`. All contexts will use this directory as `user_
 
 ---
 
-### 8. `COOKIE_V1` / `COOKIE_V2` — Auth Cookies
+#### `COOKIE_V1` / `COOKIE_V2` — Auth Cookies
 
 Required when `COOKIES=True`. Retrieve these values from your browser's DevTools under the **Application → Cookies** tab.
 
@@ -174,24 +184,26 @@ Required when `COOKIES=True`. Retrieve these values from your browser's DevTools
 
 ---
 
-### To change models select from models.json and edit in config.json
-### If image upload not working the next-action header need to be changed maually
+## Additional Notes
+
+- **To change models:** Select from `models.json` and update `config.json` accordingly.
+- **Image upload not working:** The `next-action` header may need to be updated manually.
 
 ---
 
-### 9. Camoufox_harvester 
-####  Usage:
-```bash  
-    pip install camoufox[geoip] browserforge fastapi uvicorn
-    camoufox fetch                  # download Firefox binary once
-    python camoufox_harvester.py
+## Method 2b: Camoufox Harvester
+```bash
+pip install camoufox[geoip] browserforge fastapi uvicorn
+camoufox fetch        # Download the Firefox binary once
+python camoufox_harvester.py
 ```
----
-### Sister projects
-#### [Deep Router - Deepseek Api](https://github.com/izaart95-jpg/DeepRouter)
-
-#### [Kimi-Bridge - Kimi Api](https://github.com/izaart95-jpg/Kimi-Bridge)
-
-#### [GLM-Bridge - GLM API Bridge](https://github.com/izaart95-jpg/GLM-Bridge)
 
 ---
+
+## Sister Projects
+
+| Project | Description |
+|---------|-------------|
+| [Deep Router](https://github.com/izaart95-jpg/DeepRouter) | Deepseek API Bridge |
+| [Kimi-Bridge](https://github.com/izaart95-jpg/Kimi-Bridge) | Kimi API Bridge |
+| [GLM-Bridge](https://github.com/izaart95-jpg/GLM-Bridge) | GLM API Bridge |
