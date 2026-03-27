@@ -1,4 +1,4 @@
-# Arena-Api-Bridge — Beta
+# Arena-Api-Bridge 
 
 > **Status:** Beta · ~90% complete — CAPTCHA bypass remains outstanding. Best recorded streak: 30 prompts without a CAPTCHA error (not guaranteed).
 
