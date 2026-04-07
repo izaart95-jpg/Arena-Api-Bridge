@@ -1,7 +1,6 @@
 # Arena-Api-Bridge
 
 [![Project Status](https://img.shields.io/badge/Status-Beta-blue.svg)](https://github.com/izaart95-jpg/Arena-Api-Bridge)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Cross--Platform-yellow.svg)](#)
 
 > **Note:** ~99% complete — CAPTCHA bypass remains outstanding. Best recorded streak: **30 prompts** without a CAPTCHA error *(not guaranteed)*.
