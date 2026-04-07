@@ -1,322 +1,128 @@
 [
-  {
-    "id": "019b24bb-5caf-71c3-b854-37d0c7086f21",
-    "publicName": "MAX"
-  },
-  {
-    "id": "019c2f86-74db-7cc3-baa5-6891bebb5999",
-    "publicName": "OPUS_4.6_DEEP"
-  },
-  {
-    "id": "019c2fac-13de-7550-a751-f5f593c77c72",
-    "publicName": "OPUS_4.6"
-  },
-  {
-    "id": "019c2c24-d3d1-7a6e-8d3a-fea1d79933f3",
-    "publicName": "GEMINI 3 PRO (SLOW)"
-  },
-  {
-    "id": "019b0ad8-856e-74fc-871c-86ccbb2b1d35",
-    "publicName": "GEMINI 3 FLASH"
-  },
-  {
-    "id": "019b47da-49b9-7295-906c-ce44ccd30d74",
-    "publicName": "gemini-3-flash"
-  },
-  {
-    "id": "019a9389-a9d3-77a8-afbb-4fe4dd3d8630",
-    "publicName": "grok-4.1-thinking"
-  },
-  {
-    "id": "019ab8b2-9bcf-79b5-9fb5-149a7c67b7c0",
-    "publicName": "claude-opus-4-5-20251101-thinking-32k"
-  },
-  {
-    "id": "019adbec-8396-71cc-87d5-b47f8431a6a6",
-    "publicName": "claude-opus-4-5-20251101"
-  },
-  {
-    "id": "019a9389-a4d8-748d-9939-b4640198302e",
-    "publicName": "grok-4.1"
-  },
-  {
-    "id": "019a8548-a2b1-70ce-b1be-eba096d41f58",
-    "publicName": "gpt-5.1-high"
-  },
-  {
-    "id": "019c6d29-a30c-7e20-9bd0-6650af926623",
-    "publicName": "claude-sonnet-4-6"
-  },
-  {
-    "id": "019c45d7-96f0-7d39-8143-9d57941b5523",
-    "publicName": "glm-5"
-  },
-  {
-    "id": "019b47ea-4256-7afd-85e6-8c0c8ea24a26",
-    "publicName": "ernie-5.0-0110"
-  },
-  {
-    "id": "019a2d13-28a5-7205-908c-0a58de904617",
-    "publicName": "claude-sonnet-4-5-20250929"
-  },
-  {
-    "id": "b0ea1407-2f92-4515-b9cc-b22a6d6c14f2",
-    "publicName": "claude-sonnet-4-5-20250929-thinking-32k"
-  },
-  {
-    "id": "51a47cc6-5ef9-4ac7-a59c-4009230d7564",
-    "publicName": "gemini-2.5-pro-grounding-exp"
-  },
-  {
-    "id": "0199f060-b306-7e1f-aeae-0ebb4e3f1122",
-    "publicName": "gemini-2.5-pro"
-  },
-  {
-    "id": "019b00de-7b51-7d3e-8d27-01b44b156c5d",
-    "publicName": "ernie-5.0-preview-1203"
-  },
-  {
-    "id": "f1a2eb6f-fc30-4806-9e00-1efd0d73cbc4",
-    "publicName": "claude-opus-4-1-20250805-thinking-16k"
-  },
-  {
-    "id": "96ae95fd-b70d-49c3-91cc-b58c7da1090b",
-    "publicName": "claude-opus-4-1-20250805"
-  },
-  {
-    "id": "019becd0-af81-7883-a7ca-5c4a4e42ff7a",
-    "publicName": "glm-4.7"
-  },
-  {
-    "id": "019b1449-0313-7911-b836-419e2ed79b2e",
-    "publicName": "gpt-5.2-high"
-  },
-  {
-    "id": "019b1448-ff14-7c98-a1ac-726fece799ec",
-    "publicName": "gpt-5.2"
-  },
-  {
-    "id": "019a7ebf-0f3f-7518-8899-fca13e32d9dc",
-    "publicName": "gpt-5.1"
-  },
-  {
-    "id": "019c0102-6244-72fa-a047-d308fda32c1e",
-    "publicName": "kimi-k2.5-instant"
-  },
-  {
-    "id": "983bc566-b783-4d28-b24c-3c8b08eb1086",
-    "publicName": "gpt-5-high"
-  },
-  {
-    "id": "019b9784-470e-75b9-b2fb-f005d78972e1",
-    "publicName": "qwen3-max-preview"
-  },
-  {
-    "id": "cb0f1e24-e8e9-4745-aabc-b926ffde7475",
-    "publicName": "o3-2025-04-16"
-  },
-  {
-    "id": "019aa41a-0a13-714a-beb1-be4a918a4b56",
-    "publicName": "grok-4-1-fast-reasoning"
-  },
-  {
-    "id": "019a59bc-8bb8-7933-92eb-fe143770c211",
-    "publicName": "kimi-k2-thinking-turbo"
-  },
-  {
-    "id": "4b11c78c-08c8-461c-938e-5fc97d56a40d",
-    "publicName": "gpt-5-chat"
-  },
-  {
-    "id": "98ad8b8b-12cd-46cd-98de-99edde7e03eb",
-    "publicName": "qwen3-max-2025-09-23"
-  },
-  {
-    "id": "3b5e9593-3dc0-4492-a3da-19784c4bde75",
-    "publicName": "claude-opus-4-20250514-thinking-16k"
-  },
-  {
-    "id": "ee7cb86e-8601-4585-b1d0-7c7380f8f6f4",
-    "publicName": "qwen3-235b-a22b-instruct-2507"
-  },
-  {
-    "id": "71023e9b-7361-498a-b6db-f2d2a83883fd",
-    "publicName": "grok-4-fast-chat"
-  },
-  {
-    "id": "019adb32-bb7a-77eb-882f-b8e3aaa2b2fd",
-    "publicName": "deepseek-v3.2-thinking"
-  },
-  {
-    "id": "019adb32-b716-7591-9a2f-c6882973e340",
-    "publicName": "deepseek-v3.2"
-  },
-  {
-    "id": "b88e983b-9459-473d-8bf1-753932f1679a",
-    "publicName": "kimi-k2-0905-preview"
-  },
-  {
-    "id": "7a3626fc-4e64-4c9e-821f-b449a4b43b6a",
-    "publicName": "kimi-k2-0711-preview"
-  },
-  {
-    "id": "716aa8ca-d729-427f-93ab-9579e4a13e98",
-    "publicName": "qwen3-vl-235b-a22b-instruct"
-  },
-  {
-    "id": "019acbac-df7c-73dc-9716-ebe040daaa4e",
-    "publicName": "mistral-large-3"
-  },
-  {
-    "id": "14e9311c-94d2-40c2-8c54-273947e208b0",
-    "publicName": "gpt-4.1-2025-04-14"
-  },
-  {
-    "id": "ee116d12-64d6-48a8-88e5-b2d06325cdd2",
-    "publicName": "claude-opus-4-20250514"
-  },
-  {
-    "id": "27035fb8-a25b-4ec9-8410-34be18328afd",
-    "publicName": "mistral-medium-2508"
-  },
-  {
-    "id": "0199f059-3877-7cfe-bc80-e01b1a4a83de",
-    "publicName": "gemini-2.5-flash"
-  },
-  {
-    "id": "b9edb8e9-4e98-49e7-8aaf-ae67e9797a11",
-    "publicName": "grok-4-0709"
-  },
-  {
-    "id": "0199e8e9-01ed-73e0-96ba-cf43b286bf10",
-    "publicName": "claude-haiku-4-5-20251001"
-  },
-  {
-    "id": "19b3730a-0369-49ba-ad9c-09e7337937f0",
-    "publicName": "grok-4-fast-reasoning"
-  },
-  {
-    "id": "1a400d9a-f61c-4bc2-89b4-a9b7e77dff12",
-    "publicName": "qwen3-235b-a22b-no-thinking"
-  },
-  {
-    "id": "351fe482-eb6c-4536-857b-909e16c0bf52",
-    "publicName": "qwen3-next-80b-a3b-instruct"
-  },
-  {
-    "id": "019c52a8-650a-7a55-b321-7fbc1c56588b",
-    "publicName": "minimax-m2.5"
-  },
-  {
-    "id": "019c45db-5554-7920-bc66-5c3bff36a37c",
-    "publicName": "deepmolt"
-  },
-  {
-    "id": "4653dded-a46b-442a-a8fe-9bb9730e2453",
-    "publicName": "claude-sonnet-4-20250514-thinking-32k"
-  },
-  {
-    "id": "6fcbe051-f521-4dc7-8986-c429eb6191bf",
-    "publicName": "longcat-flash-chat"
-  },
-  {
-    "id": "16b8e53a-cc7b-4608-a29a-20d4dac77cf2",
-    "publicName": "qwen3-235b-a22b-thinking-2507"
-  },
-  {
-    "id": "03c511f5-0d35-4751-aae6-24f918b0d49e",
-    "publicName": "qwen3-vl-235b-a22b-thinking"
-  },
-  {
-    "id": "6a3a1e04-050e-4cb4-9052-b9ac4bec0c38",
-    "publicName": "hunyuan-vision-1.5-thinking"
-  },
-  {
-    "id": "f1102bbf-34ca-468f-a9fc-14bcf63f315b",
-    "publicName": "o4-mini-2025-04-16"
-  },
-  {
-    "id": "5fd3caa8-fe4c-41a5-a22c-0025b58f4b42",
-    "publicName": "gpt-5-mini-high"
-  },
-  {
-    "id": "019ade1a-a918-79dd-9ef9-ba22f97c977d",
-    "publicName": "micro-mango"
-  },
-  {
-    "id": "019b352d-36a8-7dd3-bbec-2bc78852d6c0",
-    "publicName": "mimo-v2-flash"
-  },
-  {
-    "id": "019bc5e5-b128-70da-a943-a7eb0b4aa656",
-    "publicName": "mimo-v2-flash (thinking)"
-  },
-  {
-    "id": "ac44dd10-0666-451c-b824-386ccfea7bcc",
-    "publicName": "claude-sonnet-4-20250514"
-  },
-  {
-    "id": "019c1cba-2d65-7fbf-9e2e-cec63e9ca0a6",
-    "publicName": "step-3.5-flash"
-  },
-  {
-    "id": "be98fcfd-345c-4ae1-9a82-a19123ebf1d2",
-    "publicName": "claude-3-7-sonnet-20250219-thinking-32k"
-  },
-  {
-    "id": "ba8c2392-4c47-42af-bfee-c6c057615a91",
-    "publicName": "hunyuan-t1-20250711"
-  },
-  {
-    "id": "af033cbd-ec6c-42cc-9afa-e227fc12efe8",
-    "publicName": "qwen3-coder-480b-a35b-instruct"
-  },
-  {
-    "id": "019b4231-1994-75a1-8567-8cba308fba55",
-    "publicName": "minimax-m2.1-preview"
-  },
-  {
-    "id": "27b9f8c6-3ee1-464a-9479-a8b3c2a48fd4",
-    "publicName": "mistral-medium-2505"
-  },
-  {
-    "id": "a8d1d310-e485-4c50-8f27-4bff18292a99",
-    "publicName": "qwen3-30b-a3b-instruct-2507"
-  },
-  {
-    "id": "6a5437a7-c786-467b-b701-17b0bc8c8231",
-    "publicName": "gpt-4.1-mini-2025-04-14"
-  },
-  {
-    "id": "75555628-8c14-402a-8d6e-43c19cb40116",
-    "publicName": "gemini-2.5-flash-lite-preview-09-2025-no-thinking"
-  },
-  {
-    "id": "2595a594-fa54-4299-97cd-2d7380d21c80",
-    "publicName": "qwen3-235b-a22b"
-  },
-  {
-    "id": "019c7820-5480-78b6-9fef-04c0d7004054",
-    "publicName": "GEMINI 3.1 BETA"
-  },
-  {
-    "id": "019adb32-afa4-749e-9992-39653b52fe13",
-    "publicName": "imagen-4.0-fast-generate"
-  },
-  {
-    "id": "019ae6da-6438-7077-9d2d-b311a35645f8",
-    "publicName": "imagen-4.0-ultra-generate"
-  },
-  {
-    "id": "019b478d-71ee-7658-867a-bce80c8e77a3",
-    "publicName": "flux-2-max"
-  },
-  {
-    "id": "019be242-8366-7a60-a378-160b233d1f76",
-    "publicName": "chatgpt-image-latest-high-fidelity"
-  },
-  {
-    "id": "0199ef2a-583f-7088-b704-b75fd169401d",
-    "publicName": "gemini-2.5-flash-image-preview"
-  }
+  {"id": "019b24bb-5caf-71c3-b854-37d0c7086f21", "publicName": "Max"},
+  {"id": "019c2f86-74db-7cc3-baa5-6891bebb5999", "publicName": "claude-opus-4-6-thinking"},
+  {"id": "019c2fac-13de-7550-a751-f5f593c77c72", "publicName": "claude-opus-4-6"},
+  {"id": "019cc544-4848-771d-947a-1121fad1acb4", "publicName": "gemini-3.1-pro"},
+  {"id": "019c7820-5480-78b6-9fef-04c0d7004054", "publicName": "gemini-3.1-pro-preview"},
+  {"id": "019d0f45-4507-75f8-b372-18303590d93c", "publicName": "gemini-3-pro"},
+  {"id": "019cc5aa-2338-72fd-97dd-853736085a83", "publicName": "gpt-5.4-high"},
+  {"id": "019ce35a-fa6f-7262-8ee2-ed4442821ce7", "publicName": "grok-4.20-beta-0309-reasoning"},
+  {"id": "019c5826-23b2-7ea7-be9a-b4557462fe19", "publicName": "gpt-5.2-chat-latest"},
+  {"id": "019b47da-49b9-7295-906c-ce44ccd30d74", "publicName": "gemini-3-flash"},
+  {"id": "019ceb00-ae9a-7aa3-98d8-25713be55d80", "publicName": "grok-4.20-multi-agent-beta-0309"},
+  {"id": "019ab8b2-9bcf-79b5-9fb5-149a7c67b7c0", "publicName": "claude-opus-4-5-20251101-thinking-32k"},
+  {"id": "019a9389-a9d3-77a8-afbb-4fe4dd3d8630", "publicName": "grok-4.1-thinking"},
+  {"id": "019adbec-8396-71cc-87d5-b47f8431a6a6", "publicName": "claude-opus-4-5-20251101"},
+  {"id": "019cddbe-a52e-720f-9398-0f40a2914b99", "publicName": "kiteki"},
+  {"id": "019d2ac4-285d-7765-8296-d9a3aa2f2662", "publicName": "dola-seed-2.0-pro-text"},
+  {"id": "019cfd71-33d0-7fb1-96f3-16780c95966d", "publicName": "gpt-5.4-no-system-prompt"},
+  {"id": "019cc5a9-cc73-721a-a124-efee4e783d1a", "publicName": "gpt-5.4"},
+  {"id": "019c6d29-a30c-7e20-9bd0-6650af926623", "publicName": "claude-sonnet-4-6"},
+  {"id": "019a9389-a4d8-748d-9939-b4640198302e", "publicName": "grok-4.1"},
+  {"id": "019cb505-30fa-7045-b4fb-94e57a63b2fa", "publicName": "gpt-5.3-chat-latest"},
+  {"id": "019c45d7-96f0-7d39-8143-9d57941b5523", "publicName": "glm-5"},
+  {"id": "019cfcdd-5426-777e-8314-04619cb92cc4", "publicName": "gpt-5.4-mini-high"},
+  {"id": "019a8548-a2b1-70ce-b1be-eba096d41f58", "publicName": "gpt-5.1-high"},
+  {"id": "019a2d13-28a5-7205-908c-0a58de904617", "publicName": "claude-sonnet-4-5-20250929"},
+  {"id": "b0ea1407-2f92-4515-b9cc-b22a6d6c14f2", "publicName": "claude-sonnet-4-5-20250929-thinking-32k"},
+  {"id": "019b47ea-4256-7afd-85e6-8c0c8ea24a26", "publicName": "ernie-5.0-0110"},
+  {"id": "f1a2eb6f-fc30-4806-9e00-1efd0d73cbc4", "publicName": "claude-opus-4-1-20250805-thinking-16k"},
+  {"id": "51a47cc6-5ef9-4ac7-a59c-4009230d7564", "publicName": "gemini-2.5-pro-grounding-exp"},
+  {"id": "0199f060-b306-7e1f-aeae-0ebb4e3f1122", "publicName": "gemini-2.5-pro"},
+  {"id": "96ae95fd-b70d-49c3-91cc-b58c7da1090b", "publicName": "claude-opus-4-1-20250805"},
+  {"id": "019ce48d-4a2c-7173-a667-7f05ce5402cb", "publicName": "longcat-flash-chat-2602-exp"},
+  {"id": "019d049f-233c-7694-989e-9545f9748354", "publicName": "mimo-v2-pro"},
+  {"id": "019d5e8d-d53e-75f3-bcf5-815ae0cf202a", "publicName": "glm-4.7"},
+  {"id": "019becd0-af81-7883-a7ca-5c4a4e42ff7a", "publicName": "glm-4.7"},
+  {"id": "019b1449-0313-7911-b836-419e2ed79b2e", "publicName": "gpt-5.2-high"},
+  {"id": "019b1448-ff14-7c98-a1ac-726fece799ec", "publicName": "gpt-5.2"},
+  {"id": "019cc543-573d-7a3f-b155-ad9cc5733aa6", "publicName": "gpt-5.2"},
+  {"id": "019a7ebf-0f3f-7518-8899-fca13e32d9dc", "publicName": "gpt-5.1"},
+  {"id": "019cb616-bf47-7457-acaf-3e2a15a882ef", "publicName": "gemini-3.1-flash-lite-preview"},
+  {"id": "019b9784-470e-75b9-b2fb-f005d78972e1", "publicName": "qwen3-max-preview"},
+  {"id": "983bc566-b783-4d28-b24c-3c8b08eb1086", "publicName": "gpt-5-high"},
+  {"id": "019cb680-bae8-70e8-aacd-31f21dce7461", "publicName": "kimi-k2.5-instant"},
+  {"id": "019aa41a-0a13-714a-beb1-be4a918a4b56", "publicName": "grok-4-1-fast-reasoning"},
+  {"id": "cb0f1e24-e8e9-4745-aabc-b926ffde7475", "publicName": "o3-2025-04-16"},
+  {"id": "019a59bc-8bb8-7933-92eb-fe143770c211", "publicName": "kimi-k2-thinking-turbo"},
+  {"id": "4b11c78c-08c8-461c-938e-5fc97d56a40d", "publicName": "gpt-5-chat"},
+  {"id": "98ad8b8b-12cd-46cd-98de-99edde7e03eb", "publicName": "qwen3-max-2025-09-23"},
+  {"id": "019adb32-b716-7591-9a2f-c6882973e340", "publicName": "deepseek-v3.2"},
+  {"id": "3b5e9593-3dc0-4492-a3da-19784c4bde75", "publicName": "claude-opus-4-20250514-thinking-16k"},
+  {"id": "019adb32-bb7a-77eb-882f-b8e3aaa2b2fd", "publicName": "deepseek-v3.2-thinking"},
+  {"id": "ee7cb86e-8601-4585-b1d0-7c7380f8f6f4", "publicName": "qwen3-235b-a22b-instruct-2507"},
+  {"id": "71023e9b-7361-498a-b6db-f2d2a83883fd", "publicName": "grok-4-fast-chat"},
+  {"id": "b88e983b-9459-473d-8bf1-753932f1679a", "publicName": "kimi-k2-0905-preview"},
+  {"id": "7a3626fc-4e64-4c9e-821f-b449a4b43b6a", "publicName": "kimi-k2-0711-preview"},
+  {"id": "019c9270-083e-72b7-9bb6-ef32fe092f51", "publicName": "qwen3.5-122b-a10b"},
+  {"id": "716aa8ca-d729-427f-93ab-9579e4a13e98", "publicName": "qwen3-vl-235b-a22b-instruct"},
+  {"id": "019acbac-df7c-73dc-9716-ebe040daaa4e", "publicName": "mistral-large-3"},
+  {"id": "14e9311c-94d2-40c2-8c54-273947e208b0", "publicName": "gpt-4.1-2025-04-14"},
+  {"id": "ee116d12-64d6-48a8-88e5-b2d06325cdd2", "publicName": "claude-opus-4-20250514"},
+  {"id": "0199f059-3877-7cfe-bc80-e01b1a4a83de", "publicName": "gemini-2.5-flash"},
+  {"id": "b9edb8e9-4e98-49e7-8aaf-ae67e9797a11", "publicName": "grok-4-0709"},
+  {"id": "27035fb8-a25b-4ec9-8410-34be18328afd", "publicName": "mistral-medium-2508"},
+  {"id": "0199e8e9-01ed-73e0-96ba-cf43b286bf10", "publicName": "claude-haiku-4-5-20251001"},
+  {"id": "019c52a8-650a-7a55-b321-7fbc1c56588b", "publicName": "minimax-m2.5"},
+  {"id": "19b3730a-0369-49ba-ad9c-09e7337937f0", "publicName": "grok-4-fast-reasoning"},
+  {"id": "019c9240-6a0f-704e-954a-0d1e3b1b660c", "publicName": "qwen3.5-27b"},
+  {"id": "019cfcdd-0bca-706f-92b5-a4c4cbd022d8", "publicName": "gpt-5.4-nano-high"},
+  {"id": "019cf4e3-36a5-75a8-811d-1eaf867e3d0d", "publicName": "minimax-m2.7"},
+  {"id": "1a400d9a-f61c-4bc2-89b4-a9b7e77dff12", "publicName": "qwen3-235b-a22b-no-thinking"},
+  {"id": "019c9aff-e04b-746b-82bd-9c771362bcd9", "publicName": "qwen3.5-flash"},
+  {"id": "351fe482-eb6c-4536-857b-909e16c0bf52", "publicName": "qwen3-next-80b-a3b-instruct"},
+  {"id": "6fcbe051-f521-4dc7-8986-c429eb6191bf", "publicName": "longcat-flash-chat"},
+  {"id": "019c9254-5c32-70d0-8877-afdfd3590e1d", "publicName": "qwen3.5-35b-a3b"},
+  {"id": "16b8e53a-cc7b-4608-a29a-20d4dac77cf2", "publicName": "qwen3-235b-a22b-thinking-2507"},
+  {"id": "4653dded-a46b-442a-a8fe-9bb9730e2453", "publicName": "claude-sonnet-4-20250514-thinking-32k"},
+  {"id": "6a3a1e04-050e-4cb4-9052-b9ac4bec0c38", "publicName": "hunyuan-vision-1.5-thinking"},
+  {"id": "03c511f5-0d35-4751-aae6-24f918b0d49e", "publicName": "qwen3-vl-235b-a22b-thinking"},
+  {"id": "019b352d-36a8-7dd3-bbec-2bc78852d6c0", "publicName": "mimo-v2-flash"},
+  {"id": "019bc5e5-b128-70da-a943-a7eb0b4aa656", "publicName": "mimo-v2-flash (thinking)"},
+  {"id": "019d22bb-fcf5-7866-9c07-de74fe05c9cc", "publicName": "step-3.5-flash"},
+  {"id": "f1102bbf-34ca-468f-a9fc-14bcf63f315b", "publicName": "o4-mini-2025-04-16"},
+  {"id": "5fd3caa8-fe4c-41a5-a22c-0025b58f4b42", "publicName": "gpt-5-mini-high"},
+  {"id": "ac44dd10-0666-451c-b824-386ccfea7bcc", "publicName": "claude-sonnet-4-20250514"},
+  {"id": "ba8c2392-4c47-42af-bfee-c6c057615a91", "publicName": "hunyuan-t1-20250711"},
+  {"id": "af033cbd-ec6c-42cc-9afa-e227fc12efe8", "publicName": "qwen3-coder-480b-a35b-instruct"},
+  {"id": "be98fcfd-345c-4ae1-9a82-a19123ebf1d2", "publicName": "claude-3-7-sonnet-20250219-thinking-32k"},
+  {"id": "27b9f8c6-3ee1-464a-9479-a8b3c2a48fd4", "publicName": "mistral-medium-2505"},
+  {"id": "019b4231-1994-75a1-8567-8cba308fba55", "publicName": "minimax-m2.1-preview"},
+  {"id": "a8d1d310-e485-4c50-8f27-4bff18292a99", "publicName": "qwen3-30b-a3b-instruct-2507"},
+  {"id": "6a5437a7-c786-467b-b701-17b0bc8c8231", "publicName": "gpt-4.1-mini-2025-04-14"},
+  {"id": "019c6e9c-b7f1-774b-8674-b0a795a49d8b", "publicName": "trinity-large"},
+  {"id": "2595a594-fa54-4299-97cd-2d7380d21c80", "publicName": "qwen3-235b-a22b"},
+  {"id": "f44e280a-7914-43ca-a25d-ecfcc5d48d09", "publicName": "claude-3-5-sonnet-20241022"},
+  {"id": "c5a11495-081a-4dc6-8d9a-64a4fd6f7bbc", "publicName": "claude-3-7-sonnet-20250219"},
+  {"id": "73cf8705-98c8-4b75-8d04-e3746e1c1565", "publicName": "qwen3-next-80b-a3b-thinking"},
+  {"id": "789e245f-eafe-4c72-b563-d135e93988fc", "publicName": "gemma-3-27b-it"},
+  {"id": "87e8d160-049e-4b4e-adc4-7f2511348539", "publicName": "minimax-m1"},
+  {"id": "149619f1-f1d5-45fd-a53e-7d790f156f20", "publicName": "grok-3-mini-high"},
+  {"id": "7a55108b-b997-4cff-a72f-5aa83beee918", "publicName": "gemini-2.0-flash-001"},
+  {"id": "7699c8d4-0742-42f9-a117-d10e84688dab", "publicName": "grok-3-mini-beta"},
+  {"id": "bbad1d17-6aa5-4321-949c-d11fb6289241", "publicName": "mistral-small-2506"},
+  {"id": "019aebfd-af0e-7f0c-8f0d-96c588e4cd3b", "publicName": "intellect-3"},
+  {"id": "6ee9f901-17b5-4fbe-9cc2-13c16497c23b", "publicName": "gpt-oss-120b"},
+  {"id": "1ea13a81-93a7-4804-bcdd-693cd72e302d", "publicName": "step-3"},
+  {"id": "c680645e-efac-4a81-b0af-da16902b2541", "publicName": "o3-mini"},
+  {"id": "019cc65f-c1e3-7574-b332-898ab71c8211", "publicName": "mercury-2"},
+  {"id": "019a27e0-e7d8-7b0b-877c-a2106c6eb87d", "publicName": "minimax-m2"},
+  {"id": "71f96ca9-4cf8-4be7-bac2-2231613930a6", "publicName": "ling-flash-2.0"},
+  {"id": "019ae300-83b7-7717-a1e0-31accd1ff6fa", "publicName": "nova-2-lite"},
+  {"id": "2dc249b3-98da-44b4-8d1e-6666346a8012", "publicName": "gpt-5-nano-high"},
+  {"id": "885976d3-d178-48f5-a3f4-6e13e0718872", "publicName": "qwq-32b"},
+  {"id": "019ba0c1-d519-718c-b125-e6297f581232", "publicName": "olmo-3.1-32b-instruct"},
+  {"id": "9a066f6a-7205-4325-8d0b-d81cc4b049c0", "publicName": "qwen3-30b-a3b"},
+  {"id": "019c34f1-2c68-7f1a-b8cd-00f29110573b", "publicName": "molmo-2-8b"},
+  {"id": "11ad4114-c868-4fed-b6e7-d535dc9c62f8", "publicName": "ring-flash-2.0"},
+  {"id": "dcbd7897-5a37-4a34-93f1-76a24c7bb028", "publicName": "llama-3.3-70b-instruct"},
+  {"id": "ec3beb4b-7229-4232-bab9-670ee52dd711", "publicName": "gpt-oss-20b"},
+  {"id": "896a3848-ae03-4651-963b-7d8f54b61ae8", "publicName": "gemma-3n-e4b-it"},
+  {"id": "019b0aa7-334a-78e8-b2a8-885f31f4fc0c", "publicName": "nvidia-nemotron-3-nano-30b-a3b-bf16"},
+  {"id": "019a6f77-e20d-7c1d-a7cd-8bd926e7395d", "publicName": "mercury"},
+  {"id": "019ac2ef-27e1-769f-8258-d131f79e28ef", "publicName": "olmo-3-32b-think"},
+  {"id": "69f5d38a-45f5-4d3a-9320-b866a4035ed9", "publicName": "mistral-small-3.1-24b-instruct-2503"},
+  {"id": "4ddb69f5-391a-4f78-af92-7d7328c18ab1", "publicName": "ibm-granite-h-small"},
+  {"id": "019ba559-2883-7a05-b012-bf6c2d38fa86", "publicName": "olmo-3.1-32b-think"},
+  {"id": "019cf983-532b-73fa-a057-7658e1e1c5ee", "publicName": "mistral-small-2603"}
 ]
