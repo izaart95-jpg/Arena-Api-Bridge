@@ -41,6 +41,13 @@ pip install -r requirements.txt
 3. Click **Load Unpacked**.
 4. Navigate to `Arena-Api-Bridge/Captcha-Extension/extension` and select that folder.
 
+### Usage Flow
+1. Run `captcha_server.py` in background
+2. Open browser navigate to arena.ai
+3. Run python server.py follow the prompts and leave it running in background the OpenAi Compaiatable will be available at http://localhost:8000/v1
+4. Run V3 harveter in extension on the browser tab make sure arena.ai  is opened
+5. (experimental) For interactive chatting use main.py 
+
 ---
 
 ## Method 2: Browser Automation (Fallback)
