@@ -65,6 +65,7 @@ playwright install chromium
 ## Method 1: Captcha Extensions (Stable)
 
 The recommended production method using browser extensions for CAPTCHA handling.
+Full Walkthrough: [CAPTCHA-EXTENSION USAGE VIDEO](https://youtu.be/O-ssgydeuB0)
 
 ### Extension Setup
 
