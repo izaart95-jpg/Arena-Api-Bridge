@@ -20,12 +20,6 @@ Arena-Api-Bridge provides two primary methods for token harvesting:
 ## Whats New
 - **model.json** updated with all new models
 - **Captcha Extension** mode made better
-## Usage & Walkthroughs
-
-- 📺 [Browser Automation Walkthrough (YouTube)](https://youtu.be/hPmg9oMS3e8)
-- 📺 [Extension Usage Walkthrough (YouTube)](https://youtu.be/O-ssgydeuB0)
-
-> Use the LMArena credentials from the videos to test quickly or on first run.
 
 ---
 
