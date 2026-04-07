@@ -1,6 +1,6 @@
 # Arena-Api-Bridge 
 
-> **Status:** Beta · ~90% complete — CAPTCHA bypass remains outstanding. Best recorded streak: 30 prompts without a CAPTCHA error (not guaranteed).
+> **Status:** Beta · ~99% complete — CAPTCHA bypass remains outstanding. Best recorded streak: 30 prompts without a CAPTCHA error (not guaranteed).
 
 ---
 
@@ -17,7 +17,9 @@ Arena-Api-Bridge provides two primary methods for token harvesting:
 > **Note:** Captcha-Extensions is the stable recommended method. If you are frequently encountering reCAPTCHA validation failures, try the latest extension version from the main repo: [Captcha-Extension](https://github.com/izaart95-jpg/Captcha-Extension)
 
 ---
-
+## Whats New
+- **model.json** updated with all new models
+- **Captcha Extension** mode made better
 ## Usage & Walkthroughs
 
 - 📺 [Browser Automation Walkthrough (YouTube)](https://youtu.be/hPmg9oMS3e8)
